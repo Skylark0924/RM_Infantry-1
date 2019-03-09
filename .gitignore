@@ -1,3 +1,8 @@
+#For RM2019 SJTU JDragon Infantry Ingnore Specialized Settings
+MDK-ARM/RM_Infantry
+MDK-ARM/RM_Infantry.uvguix.*
+
+#For C language Ignore General Settings
 # Prerequisites
 *.d
 
