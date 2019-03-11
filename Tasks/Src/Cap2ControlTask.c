@@ -51,8 +51,9 @@
 #define VAL__OUTPUT_PWM_MAX     (OUTPUT_PWM_PERCENT_MAX * PWM_CMP_MAX / 100)
 #define VAL__OUTPUT_PWM_PERCENT (output_pwm_cmp * 100.0 / PWM_CMP_MAX)
 #define VAL__INPUT_PWM_PERCENT  (input_pwm_cmp * 100.0 / PWM_CMP_MAX)
-//#define VAL__CAP_VOLTAGE        (FUNC__Get_Voltage(UCK1)  * 9.2 * 13.33 / 11.01)
-#define VAL__CAP_VOLTAGE        (FUNC__Get_Voltage(UCK1))
+#define VAL__CAP_VOLTAGE        (FUNC__Get_Voltage(UCK1)  * 9.2 * 13.33 / 11.01)
+//µçÁ÷¼Æ²âÊÔ
+//#define VAL__CAP_VOLTAGE        (FUNC__Get_Voltage(UCK1))
 #define VAL__CAP_Power_CURR     (FUNC__Get_Voltage(ICIN)  / 0.152)
 #define VAL__CAP_Power_Voltage    (FUNC__Get_Voltage(ICOUT)  * 9.2 * 13.33 / 11.01) //Power Voltage
 
@@ -251,7 +252,7 @@ static void Cap_Ctr_STOP() {
 	
 		Control_SuperCap.C_voltage = 100*Cap_Get_Cap_Voltage();
 	  Control_SuperCap.P_voltage = 100*Cap_Get_Power_Voltage();
-	  Control_SuperCap.P_Power = 100*Cap_Get_Power_Voltage()*Cap_Get_Power_CURR();*/
+	  Control_SuperCap.P_Power = 100*Cap_Get_Power_Voltage()*Cap_Get_Power_CURR();
     if(++cnt >=5 && ncnt < DEBUG_HITS){
       cps[0][ncnt] = PowerHeatData.chassisPower * 100;
       cps[1][ncnt] = PowerHeatData.chassisPowerBuffer  * 100;

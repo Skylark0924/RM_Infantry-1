@@ -225,6 +225,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		
 		rc_cnt++;
 		if(auto_counter > 0) auto_counter--;
+		if(auto_counter_fps > 0) auto_counter_fps--;
 		
 		if (rx_free == 1 && tx_free == 1)
 		{
