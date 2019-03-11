@@ -22,7 +22,7 @@ MDK-ARM/RM_Infantry.uvguix.*
 *.pch
 
 # Libraries
-*.lib
+#*.lib
 *.a
 *.la
 *.lo
