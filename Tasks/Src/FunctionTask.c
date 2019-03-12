@@ -86,7 +86,7 @@ void RemoteControlProcess(Remote *rc)
 		}
 
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
-		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF/2;
+		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 
 		//GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
@@ -132,7 +132,7 @@ void RemoteControlProcess(Remote *rc)
 		}
 		if(Cap_Get_Cap_Voltage()>12 && SuperCTestMode==1){
 			ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF * 2;
-			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF / 2 ;
+			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF ;
 		}
 		else
 		{
@@ -306,8 +306,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	//GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
 	if(startUp)
 	{
-		GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
-		GMY.TargetAngle += mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
+		GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
 	}
 	else if(!startUp)
 	{
@@ -407,17 +407,20 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				ShootState = 1;
 				FRICL.TargetAngle = FrictionLSpeedLow;
 				FRICR.TargetAngle = -FrictionLSpeedLow;
+				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}else if(key->v & KEY_X) 	//key: X 20m/s
 			{
 				ShootState = 1;
 				FRICL.TargetAngle = FrictionLSpeedMid;
 				FRICR.TargetAngle = -FrictionLSpeedMid;
+				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
 			else if(key->v & KEY_C) 	//key: C 28m/s
 			{
 				ShootState = 1;
 				FRICL.TargetAngle = FrictionLSpeedHigh;
 				FRICR.TargetAngle = -FrictionLSpeedHigh;
+				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
 		}
 	}
