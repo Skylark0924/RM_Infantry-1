@@ -134,6 +134,14 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	//各模块初始化
+	
+	/* 开启四路24V电源 */
+	HAL_GPIO_WritePin(GPIOH,1<<2,1);
+	HAL_GPIO_WritePin(GPIOH,1<<3,1);
+	HAL_GPIO_WritePin(GPIOH,1<<4,1);
+	HAL_GPIO_WritePin(GPIOH,1<<5,1);
+	/*******************/
+	
 	#ifdef FRIC_PWM_MODE//临时使用，后续不需要
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
 	
