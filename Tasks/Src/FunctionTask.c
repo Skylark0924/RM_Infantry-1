@@ -88,19 +88,8 @@ void RemoteControlProcess(Remote *rc)
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
-
-		//GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
-		//GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
-		if(!startUp)
-		{
 			GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
 			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
-		}
-		else 
-		{
-			GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
-			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
-		}
 		#else
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -116,6 +105,26 @@ void RemoteControlProcess(Remote *rc)
 		aim_mode=0;
 		AutoAimGMCTRL();
 		#endif /*USE_AUTOAIM*/
+		
+		/*遥控器左侧轴掰到最下，开启舱盖*/
+		if(rc->ch3 == 0x16C)
+		{
+			//twist_state = 1;
+			int servo_id = 0, pwm = 1800, time = 0;
+			char ServoMes[15];
+			sprintf(ServoMes, "#%03dP%04dT%04d!", servo_id, pwm, time);
+			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
+		}
+		/*否则关闭舱盖*/
+		else 
+		{
+//			twist_state = 0;
+			int servo_id = 0, pwm = 500, time = 0;
+			char ServoMes[15];
+			sprintf(ServoMes, "#%03dP%04dT%04d!", servo_id, pwm, time);
+			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
+		}
+		
 	}
 	if(WorkState == ADDITIONAL_STATE_ONE)
 	{
@@ -379,10 +388,11 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 		}//DO NOT NEED TO BREAK
 		case SHIFT:				//quick
 		{
-			
+		
 		}//DO NOT NEED TO BREAK
 		case NO_CHANGE:			//normal
-		{//CM Movement Process
+		{
+			//CM Movement Process
 			if(key->v & KEY_W)  		//key: w
 				ChassisSpeedRef.forward_back_ref =  KM_FORWORD_BACK_SPEED* FBSpeedRamp.Calc(&FBSpeedRamp);
 			else if(key->v & KEY_S) 	//key: s
@@ -421,6 +431,25 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				FRICL.TargetAngle = FrictionLSpeedHigh;
 				FRICR.TargetAngle = -FrictionLSpeedHigh;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
+			}
+			
+			if(key->v & KEY_G)
+			{
+			/*按住G控制舵机，开启舱盖*/
+			int id = 0, pwm = 1800, time = 0;
+			char ServoMes[15];
+			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
+			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	
+			/********************/
+			}
+			else 
+			{
+			/*不按G，关闭舱盖*/
+			int id = 0, pwm = 500, time = 0;
+			char ServoMes[15];
+			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
+			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
+			/***************/
 			}
 		}
 	}

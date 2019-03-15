@@ -50,6 +50,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "includes.h"
+#include "ServoTask.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -155,6 +156,9 @@ int main(void)
 	InitCanReception();
 	//InitGyroUart();
 	InitJudgeUart();
+	/*弹舱舵机初始化*/
+	InitServoUart();
+	/*弹舱舵机初始化结束*/
 	/*****陀螺仪初始化*****/
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);//用于恒温电阻
 	mpu_device_init();
@@ -165,6 +169,7 @@ int main(void)
 	#ifdef	USE_AUTOAIM
 		InitAutoAim();
 	#endif /*USE_AUTOAIM*/
+	
 	#ifdef DEBUG_MODE
 	ctrlUartInit();
 	//时间中断
