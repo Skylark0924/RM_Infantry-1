@@ -87,10 +87,16 @@ void RemoteControlProcess(Remote *rc)
 
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
-		#ifdef USE_CHASSIS_FOLLOW
-			GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+//		#ifdef USE_CHASSIS_FOLLOW
+//			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+//			GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+//		#else
+//		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
+//		#endif
+				
 			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
-		#else
+			GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		#ifdef USE_CHASSIS_FOLLOW
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
 		
@@ -186,9 +192,7 @@ void RemoteControlProcess(Remote *rc)
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
-		//GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
-		if(startUp)GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
-		else if(!startUp)GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
 		#else
 		ChassisSpeedRef.rotate_ref = channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -311,18 +315,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	MINMAX(mouse->y, -150, 150); 
 	
 	#ifdef USE_CHASSIS_FOLLOW
-	//GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
-	//GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
-	if(startUp)
-	{
 		GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
 		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
-	}
-	else if(!startUp)
-	{
-		GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
-		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
-	}
 	#else
 	ChassisSpeedRef.rotate_ref = -mouse->x * RC_ROTATE_SPEED_REF;
 	#endif
@@ -356,6 +350,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 		case SHORT_CLICK:
 		{
 			if(ShootState && fabs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}
+
 			//if(ShootState) Delay(20,{STIR.TargetAngle-=60;});
 		}break;
 		case LONG_CLICK:

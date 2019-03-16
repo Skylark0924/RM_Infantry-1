@@ -530,14 +530,14 @@
               <FilePath>..\Tasks\Src\UpperTask.c</FilePath>
             </File>
             <File>
-              <FileName>AutoAimTask.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\AutoAimTask.c</FilePath>
-            </File>
-            <File>
               <FileName>PowerLimitationTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\PowerLimitationTask.c</FilePath>
+            </File>
+            <File>
+              <FileName>AutoAimTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Tasks\Src\AutoAimTask.c</FilePath>
             </File>
             <File>
               <FileName>GyroReadTask.c</FileName>
@@ -563,6 +563,11 @@
               <FileName>Cap2ControlTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\Cap2ControlTask.c</FilePath>
+            </File>
+            <File>
+              <FileName>ServoTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Tasks\Src\ServoTask.c</FilePath>
             </File>
           </Files>
         </Group>
