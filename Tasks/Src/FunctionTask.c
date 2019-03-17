@@ -440,6 +440,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 					aim_mode=0;
 				else
 					aim_mode=1;
+				if(aim_mode)
+					AutoAimGMCTRL();
 			}
 			else if (key->v & KEY_Q)
 			{
@@ -448,6 +450,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 					ChassisTwistState=0;
 				else 
 					ChassisTwistState=1;
+				if(ChassisTwistState)
+					ChassisTwist();
 			}
 			
 			if(key->v & KEY_G)
