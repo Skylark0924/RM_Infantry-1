@@ -73,10 +73,10 @@ fuzzyPID fuzzy(float e,float ec)
      float etemp,ectemp;
      float eLefttemp,ecLefttemp;
      float eRighttemp ,ecRighttemp;
- 
+  
      int eLeftIndex,ecLeftIndex;
      int eRightIndex,ecRightIndex;
-     fuzzyPID      fuzzy_PID;
+     fuzzyPID   fuzzy_PID;
      etemp = e > 3.0 ? 0.0 : (e < - 3.0 ? 0.0 : (e >= 0.0 ? (e >= 2.0 ? 2.5: (e >= 1.0 ? 1.5 : 0.5)) : (e >= -1.0 ? -0.5 : (e >= -2.0 ? -1.5 : (e >= -3.0 ? -2.5 : 0.0) ))));
  
      eLeftIndex = (int)e;

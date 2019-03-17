@@ -29,7 +29,7 @@ uint16_t aim_cnt=0;																						//自瞄分频延时变量
 uint16_t auto_counter_fps = 1000;															//检测帧率
 int16_t current_yaw=0,current_pitch=0;												//当前云台角度
 int16_t receive_cnt=0,receive_rcd=0;													//检测上位机信号帧数
-int8_t track_cnt=0;																						//追踪变量
+int8_t track_cnt=100;																						//追踪变量
 
 //********************************************************************************************//
 
@@ -83,8 +83,8 @@ void AutoAimUartRxCpltCallback()
 		aim.pitch=(float)( (((RX_ENEMY_PITCH1<<8)|RX_ENEMY_PITCH2)>0x7fff) ? (((RX_ENEMY_PITCH1<<8)|RX_ENEMY_PITCH2)-0xffff) : (RX_ENEMY_PITCH1<<8)|RX_ENEMY_PITCH2 )*k_angle;
 		aim.yaw-=adjust.yaw;
 		aim.pitch+=adjust.pitch;
-		MINMAX(aim.yaw,-3.0f,3.0f);
-		MINMAX(aim.pitch,-2.0f,2.0f);
+		MINMAX(aim.yaw,-15.0f,15.0f);
+		MINMAX(aim.pitch,-10.0f,10.0f);
 		//enemy_scope.z=350;
 		find_enemy=1;
 		receive_cnt++;
@@ -192,12 +192,12 @@ void EnemyINFOProcess()
 	//追踪
 	if(((aim.yaw>0 && aim_rcd.yaw>0) || (aim.yaw<0 && aim_rcd.yaw<0)))
 	{
-		track_cnt++;
+		track_cnt--;
 		MINMAX(track_cnt,0,100);
 	}
 	else
 	{
-		track_cnt=0;
+		track_cnt=100;
 	}
 }
 
@@ -208,26 +208,26 @@ void EnemyINFOProcess()
 
 void AutoAimNormal()
 {
-	MINMAX(aim.yaw,-3.0f,3.0f);
-	MINMAX(aim.pitch,-2.0f,2.0f);
+	MINMAX(aim.yaw,-15.0f,15.0f);
+	MINMAX(aim.pitch,-10.0f,10.0f);
 	if(find_enemy)
 	{
-		if(aim_cnt<1)
-		{
-			GMY.TargetAngle+=(aim.yaw+aim_rcd.yaw)/8;
-			//GMY.TargetAngle+=(aim.yaw+aim_rcd.yaw)/5*(0.5f+0.012f*track_cnt);
-			GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/8;
-			aim_cnt++;
-		}
-		else
-		{
+//		if(aim_cnt<1)
+//		{
+	//		GMY.TargetAngle+=(aim.yaw)/8;
+			GMY.TargetAngle+=(aim.yaw)/5*(0.5f+0.012f*track_cnt);
+			GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/6;
+//			aim_cnt++;
+//		}
+//		else
+//		{
 			find_enemy=0;
-			aim_cnt=0;
-			aim_rcd.yaw=aim.yaw;
-			aim_rcd.pitch=aim.pitch;
+//			aim_cnt=0;
+//			aim_rcd.yaw=aim.yaw;
+//			aim_rcd.pitch=aim.pitch;
 		}
 	}
-}
+
 
 //**************************************************************************//
 

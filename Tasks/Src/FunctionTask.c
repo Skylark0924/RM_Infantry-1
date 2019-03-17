@@ -36,6 +36,7 @@ uint8_t ChassisTwistState = 0;
 int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
 int16_t FrictionLSpeedHigh = -8000;
+int8_t zc1=0, zc2=0;
 extern uint8_t startUp;
 
 //³õÊ¼»¯
@@ -431,6 +432,22 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				FRICL.TargetAngle = FrictionLSpeedHigh;
 				FRICR.TargetAngle = -FrictionLSpeedHigh;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
+			}
+			else if(key->v & KEY_F)
+			{
+				zc1++;
+				if (zc1%2==0)
+					aim_mode=0;
+				else
+					aim_mode=1;
+			}
+			else if (key->v & KEY_Q)
+			{
+				zc2++;
+				if (zc2%2==0)
+					ChassisTwistState=0;
+				else 
+					ChassisTwistState=1;
 			}
 			
 			if(key->v & KEY_G)
