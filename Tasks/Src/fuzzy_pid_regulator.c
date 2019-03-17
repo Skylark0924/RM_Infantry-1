@@ -11,25 +11,7 @@
   * C语言Fuzzy_PID函数实现
   ******************************************************************************
   */
-//#include "includes.h"
-#include "main.h"
-#include "stm32f4xx_hal.h"
-#include "can.h"
-#include "dma.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
-#include "iwdg.h"
-#include "adc.h"
-#include "math.h"
-
-#include "fuzzy_pid_regulator.h"
-#include "AuxDevice.h"
-#include "RemoteTask.h"
-#include "FunctionTask.h"
-
-
+#include "includes.h"
 
 
 #define IS_Kp 1

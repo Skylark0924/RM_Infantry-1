@@ -16,7 +16,7 @@
 
 typedef __packed struct
 {
-uint16_t stageRemianTime;
+uint16_t stageRemainTime;
 uint8_t gameProgress;
 uint8_t robotLevel;
 uint16_t remainHP;
