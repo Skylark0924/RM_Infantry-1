@@ -36,7 +36,7 @@ uint8_t ChassisTwistState = 0;
 int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
 int16_t FrictionLSpeedHigh = -8000;
-int8_t zc1=0, zc2=0;
+int8_t aimcount=0, chassiscount=0, servocount=0;
 extern uint8_t startUp;
 
 //初始化
@@ -356,15 +356,15 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	{
 		case SHORT_CLICK:
 		{
+			ShootState=1;
 			if(ShootState && fabs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}
 			//if(ShootState) Delay(20,{STIR.TargetAngle-=60;});
 		}break;
 		case LONG_CLICK:
 		{
+			ShootState=1;
 			if(ShootState)
-			{
-				if(ShootState && fabs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}//fakeHeat0=fakeHeat0+realBulletSpeed0;
-			}
+					ShootOneBullet();//fakeHeat0=fakeHeat0+realBulletSpeed0;
 		}
 		default: break;
 	}
@@ -435,43 +435,46 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			}
 			else if(key->v & KEY_F)
 			{
-				zc1++;
-				if (zc1%2==0)
+				aimcount++;
+				if (aimcount%2==0)
 					aim_mode=0;
 				else
 					aim_mode=1;
-				if(aim_mode)
-					AutoAimGMCTRL();
 			}
 			else if (key->v & KEY_Q)
 			{
-				zc2++;
-				if (zc2%2==0)
+				chassiscount++;
+				if (chassiscount%2==0)
 					ChassisTwistState=0;
 				else 
 					ChassisTwistState=1;
-				if(ChassisTwistState)
-					ChassisTwist();
 			}
-			
-			if(key->v & KEY_G)
+					
+			else if(key->v & KEY_G)
 			{
-			/*按住G控制舵机，开启舱盖*/
-			int id = 0, pwm = 1800, time = 0;
-			char ServoMes[15];
-			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
-			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	
-			/********************/
+					/*按住G控制舵机，开启舱盖*/
+					int id = 0, pwm = 1800, time = 0;
+					char ServoMes[15];
+					sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
+					HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	
+					/********************/
+
+
+
 			}
-			else 
-			{
 			/*不按G，关闭舱盖*/
 			int id = 0, pwm = 500, time = 0;
 			char ServoMes[15];
 			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
 			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
-			/***************/
-			}
+					/***************/
+			
+			if(ChassisTwistState)
+					ChassisTwist();
+			else
+				ChassisDeTwist();
+			if(aim_mode)
+					AutoAimGMCTRL();
 		}
 	}
 	//Limit_and_Synchronization();

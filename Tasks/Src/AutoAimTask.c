@@ -29,7 +29,7 @@ uint16_t aim_cnt=0;																						//自瞄分频延时变量
 uint16_t auto_counter_fps = 1000;															//检测帧率
 int16_t current_yaw=0,current_pitch=0;												//当前云台角度
 int16_t receive_cnt=0,receive_rcd=0;													//检测上位机信号帧数
-int8_t track_cnt=100;																						//追踪变量
+int8_t track_cnt=60;																						//追踪变量
 
 //********************************************************************************************//
 
@@ -193,11 +193,11 @@ void EnemyINFOProcess()
 	if(((aim.yaw>0 && aim_rcd.yaw>0) || (aim.yaw<0 && aim_rcd.yaw<0)))
 	{
 		track_cnt--;
-		MINMAX(track_cnt,0,100);
+		MINMAX(track_cnt,0,60);
 	}
 	else
 	{
-		track_cnt=100;
+		track_cnt=60;
 	}
 }
 
@@ -215,8 +215,8 @@ void AutoAimNormal()
 //		if(aim_cnt<1)
 //		{
 	//		GMY.TargetAngle+=(aim.yaw)/8;
-			GMY.TargetAngle+=(aim.yaw)/5*(0.5f+0.012f*track_cnt);
-			GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/6;
+			GMY.TargetAngle+=(aim.yaw)/5*(0.5f+0.012f*track_cnt) - 0.02f;
+			GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/6 - 0.17f;
 //			aim_cnt++;
 //		}
 //		else
