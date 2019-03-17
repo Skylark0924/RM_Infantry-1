@@ -166,8 +166,8 @@ void RemoteControlProcess(Remote *rc)
 		if(SuperCTestMode==0)
 		{
 			ShootState = 1;
-			FRICL.TargetAngle = FrictionLSpeedLow;
-			FRICR.TargetAngle = -FrictionLSpeedLow;
+			FRICL.TargetAngle = FrictionLSpeedHigh;
+			FRICR.TargetAngle = -FrictionLSpeedHigh;
 		}
 		else
 		{
@@ -202,8 +202,8 @@ void RemoteControlProcess(Remote *rc)
 		if(SuperCTestMode==0)
 		{
 			ShootState = 1;
-			FRICL.TargetAngle = FrictionLSpeedLow;
-			FRICR.TargetAngle = -FrictionLSpeedLow;
+			FRICL.TargetAngle = FrictionLSpeedHigh;
+			FRICR.TargetAngle = -FrictionLSpeedHigh;
 			//Delay(10,{STIR.TargetAngle-=60;});
 			if(STIR.TargetAngle-STIR.RealAngle>-100)
 			{Delay(5,{STIR.TargetAngle-=60;});}
@@ -220,8 +220,8 @@ void RemoteControlProcess(Remote *rc)
 			//FRICL.TargetAngle = 0;
 			//FRICR.TargetAngle = 0;
 				ShootState = 1;
-			FRICL.TargetAngle = FrictionLSpeedLow;
-			FRICR.TargetAngle = -FrictionLSpeedLow;
+			FRICL.TargetAngle = FrictionLSpeedHigh;
+			FRICR.TargetAngle = -FrictionLSpeedHigh;
 			//Delay(10,{STIR.TargetAngle-=60;});
 			if(STIR.TargetAngle-STIR.RealAngle>-100)
 			{Delay(5,{STIR.TargetAngle-=60;});}

@@ -292,12 +292,12 @@ extShowData_t user_data;
 void Send_User_Data()
 {
 	uint8_t buffer[22]={0};
-	/*test
-	user_data.data1 = tmpx;
+	//test
+	user_data.data1 += 0.1f;
 	user_data.data2 += 0.2f;
 	user_data.data3 += 0.3f;
-	user_data.mask = 0xC0;
-	*/
+	user_data.mask = 0xE0;//二进制最左位对应灯条最右灯
+	
 	unsigned char * bs1 = (unsigned char*)&user_data.data1;
 	unsigned char * bs2 = (unsigned char*)&user_data.data2;
 	unsigned char * bs3 = (unsigned char*)&user_data.data3;
@@ -313,7 +313,7 @@ void Send_User_Data()
 	buffer[19] = user_data.mask;
 	static uint16_t CRC16=0;
 	CRC16 = myGet_CRC16_Check_Sum(buffer, 20, myCRC16_INIT);
-	buffer[20] = CRC16 & 0xff;
+	buffer[20] = CRC16 & 0x00ff;//0xff
 	buffer[21] = (CRC16 >> 8) & 0xff;
 
 	tx_free = 0;

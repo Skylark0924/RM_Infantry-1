@@ -555,7 +555,7 @@ void ControlGMP(MotorINFO* id)
 	
 	//使得pitch轴在初始化时缓慢复位
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
-	if(GMPReseted==0) id->positionPID.outputMax = 1.0;
+	if(GMPReseted==0) id->positionPID.outputMax = 5.0;
 	else id->positionPID.outputMax = 10.0;
 	
 	#ifndef SHOOT_TEST
