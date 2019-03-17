@@ -458,9 +458,6 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 					sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
 					HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	
 					/********************/
-
-
-
 			}
 			/*²»°´G£¬¹Ø±Õ²Õ¸Ç*/
 			int id = 0, pwm = 500, time = 0;
