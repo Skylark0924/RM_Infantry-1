@@ -13,6 +13,7 @@
 |lower | STOP |
 
 遥控器左上拨杆控制functionmode
+
 | Position|functionmode|
 |----|----|
 |upper|UPPER_POS|
@@ -21,6 +22,7 @@
 
 二者组合控制WorkState
 WorkState开机初始化PREPARE_STATE, 开机初始化后自动入NORMAL_STATE
+
 |	inputemode|	functionmode| WorkState |
 |:----:|:----:|:----:|
 |STOP| * |STOP_STATE|
