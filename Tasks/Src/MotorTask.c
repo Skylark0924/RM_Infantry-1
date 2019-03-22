@@ -52,11 +52,11 @@ MotorINFO FRICR = Chassis_MOTORINFO_Init(&ControlCM,FRIC_MOTOR_SPEED_PID_DEFAULT
 //									   fw_PID_INIT(0.3,0,0.1, 	10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(800,30,50, 10000.0, 10000.0, 10000.0, 6000.0));
 MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
-									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
-									   fw_PID_INIT(1500,80,0, 10000.0, 10000.0, 10000.0, 5000.0));//3000
+									   fw_PID_INIT(30,0,0, 	100.0, 100.0, 100.0, 2000),
+									   fw_PID_INIT(60,0.2,0, 10000.0, 10000.0, 10000.0, 30000));//3000
 MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
-									   fw_PID_INIT(0.3,0,0.1, 10.0, 10.0, 10.0, 10.0),
-									   fw_PID_INIT(3000,20,30, 5000.0, 15000.0, 15000.0, 6000.0));
+									   fw_PID_INIT(50,0,0, 10.0, 10.0, 10.0, 2000),
+									   fw_PID_INIT(70,0.2,0, 5000.0, 15000.0, 15000.0, 30000));
 //MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
 //									   fw_PID_INIT(3.29,2.39,1.13, 10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(22.1,27.43,0.022, 5000.0, 15000.0, 15000.0, 6000.0));
