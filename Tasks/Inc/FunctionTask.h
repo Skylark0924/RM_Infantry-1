@@ -15,7 +15,7 @@
 #include "includes.h"
 
 //Ò£¿Ø³£Á¿Çø
-#define RC_CHASSIS_SPEED_REF    		0.60f
+#define RC_CHASSIS_SPEED_REF			0.60f
 #define RC_ROTATE_SPEED_REF 			0.05f
 #define RC_GIMBAL_SPEED_REF				0.006f
 

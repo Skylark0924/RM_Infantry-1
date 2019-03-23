@@ -16,13 +16,10 @@ void ControlSTIR(MotorINFO *id);
 void ControlCM(MotorINFO *id);
 void ControlGMY(MotorINFO *id);
 void ControlGMP(MotorINFO *id);
-extern int16_t testIntensity;
-extern uint8_t startUp;
 
 uint8_t GMYReseted = 0;
 uint8_t GMPReseted = 0;
 
-int16_t FindPitchZero = 0;
 
 //**********************************************************************
 //					pid(kp,ki,kd,kprM,kirM,kdrM,rM)
@@ -152,191 +149,86 @@ void ControlCM(MotorINFO* id)
 	id->Intensity=(1.30f)*id->offical_speedPID.output;
 }
 
-
+//朝车头方向，Yaw轴角度&角速度向左为正，向右为负
 void ControlGMY(MotorINFO* id)
 {
 	if(id==0) return;
-	if(id->s_count == 1)
-	{	
-		#ifndef SHOOT_TEST
-		float 	ThisAngle = -imu.yaw ;
-		#else
-		double ThisAngle = -(double)(GM_YAW_ZERO-id->RxMsg6623.angle)/8192.0*360.0;
-		#endif
-		float 	ThisSpeed = -imu.wz;		
-		int8_t 	dir;
-		if(id->ReductionRate>=0) dir=1;
-		else dir=-1;
-		
-		if(id->FirstEnter==1) {
-			id->lastRead = ThisAngle;
-			id->RealAngle =(double)(GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate;
-			NORMALIZE_ANGLE180(id->RealAngle);
-			id->FirstEnter = 0;
-			return;
-		}
+	
+	id->EncoderAngle = (id->RxMsg6623.angle - GM_YAW_ZERO)/8192.0*360.0;
+	NORMALIZE_ANGLE180(id->EncoderAngle);
+	
+	float 	ThisAngle = -imu.yaw ;
+	float 	Speed = imu.wz;		
 
-		if(ThisAngle <= id->lastRead)
-		{
-			if((id->lastRead-ThisAngle) > 180)
-				 id->RealAngle += (ThisAngle + 360 - id->lastRead)*dir;
-			else
-				 id->RealAngle -= (id->lastRead - ThisAngle)*dir;
-		}
+	//角度由0-360突变处理
+	if(ThisAngle <= id->lastRead)
+	{
+		if((id->lastRead-ThisAngle) > 180)
+			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
 		else
-		{
-			if((ThisAngle-id->lastRead) > 180)
-				 id->RealAngle -= (id->lastRead + 360 - ThisAngle)*dir;
-			else
-				 id->RealAngle += (ThisAngle - id->lastRead)*dir;
-		}
-		if(abs(id->RealAngle-id->TargetAngle)<5) GMYReseted = 1;
-		id->lastRead = ThisAngle ;
-		#ifdef INFANTRY2
-		MINMAX(id->TargetAngle, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate - 40.0f, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 40.0f);
-		#endif
-		#ifdef INFANTRY3
-		//MINMAX(id->TargetAngle, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate - 40.0f, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 40.0f);
-		MINMAX(id->TargetAngle, id->RealAngle -(id->RxMsg6623.angle-GM_YAW_ZERO) * 360.0 / 8192.0 / id->ReductionRate - 40.0f, id->RealAngle -(id->RxMsg6623.angle-GM_YAW_ZERO) * 360.0 / 8192.0 / id->ReductionRate + 40.0f);
-		#endif
-		#ifdef INFANTRY4
-		MINMAX(id->TargetAngle, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate - 30.0f, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 30.0f);
-		#endif
-		#ifdef GM_TEST
-		MINMAX(id->TargetAngle, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate - 40.0f, id->RealAngle - (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 40.0f);
-		#endif
-		if(GMYReseted==0) id->positionPID.outputMax = 1.0;
-		else id->positionPID.outputMax = 10.0;
-		id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,-ThisSpeed);
-		//id->Intensity=0;
-		//id->s_count = 0;
+			 id->RealAngle -= (id->lastRead - ThisAngle);
 	}
 	else
 	{
-		id->s_count++;
-	}		
-}
-/*
-void ControlGMP(MotorINFO* id)
-{
-	if(id==0) return;
-	if(id->s_count == 1)
-	{		
-		#ifndef SHOOT_TEST
-		float 	ThisAngle = imu.pit;
-		#else
-		double ThisAngle = (double)(GM_PITCH_ZERO-id->RxMsg6623.angle)/8192.0*360.0;
-		#endif
-		float 	ThisSpeed = -imu.wy;
-		int8_t 	dir;
-		if(id->ReductionRate>=0) dir=1;
-		else dir=-1;
-		
-		if(id->FirstEnter==1) {
-			id->lastRead = ThisAngle;
-			//id->RealAngle =(double)(id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate;
-			id->RealAngle =(double)(GM_PITCH_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate;
-			NORMALIZE_ANGLE180(id->RealAngle);
-			id->FirstEnter = 0;
-			return;
-		}
-		
-		if(ThisAngle <= id->lastRead)
-		{
-			if((id->lastRead-ThisAngle) > 180)
-				 id->RealAngle += (ThisAngle + 360 - id->lastRead)*dir;
-			else
-				 id->RealAngle -= (id->lastRead - ThisAngle)*dir;
-		}
+		if((ThisAngle-id->lastRead) > 180)
+			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
 		else
-		{
-			if((ThisAngle-id->lastRead) > 180)
-				 id->RealAngle -= (id->lastRead + 360 - ThisAngle)*dir;
-			else
-				 id->RealAngle += (ThisAngle - id->lastRead)*dir;
-		}
-		if(abs(id->RealAngle-id->TargetAngle)<5) GMPReseted = 1;
-		id->lastRead = ThisAngle ;
-		#ifdef INFANTRY2
-		MINMAX(id->TargetAngle, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate - 20.0f, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate + 20.0f);
-		#endif
-		#ifdef INFANTRY3
-		//MINMAX(id->TargetAngle, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate - 20.0f, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate + 20.0f);
-		MINMAX(id->TargetAngle, -20.0f,20.0f);
-		#endif
-		#ifdef INFANTRY4
-		MINMAX(id->TargetAngle, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate - 15.0f, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate + 30.0f);
-		#endif
-		#ifdef GM_TEST
-		MINMAX(id->TargetAngle, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate - 20.0f, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 / id->ReductionRate + 30.0f);
-		#endif
-		if(GMPReseted==0) id->positionPID.outputMax = 1.5;
-		else id->positionPID.outputMax = 10.0;
-		id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
-    //id->Intensity=0;
-		MINMAX(id->Intensity,-id->speedPID.outputMax,id->speedPID.outputMax);
-		
-		//id->s_count = 0;
+			 id->RealAngle += (ThisAngle - id->lastRead);
 	}
-	else
-	{
-		id->s_count++;
-	}		
-}
-*/
+	id->lastRead = ThisAngle ;
 
-//简化Pitch控制
-//Pitch轴纯靠IMU反馈，且不需要角度突变处理
-//定义pitch轴角度，角速度抬头为正
-void ControlGMP(MotorINFO* id)
-{
-	if(id==0) return;
-	#ifndef SHOOT_TEST
-	id->RealAngle = imu.pit;
-	#else
-	FindPitchZero = id->RxMsg6623.angle;
-	double ThisAngle = id->RxMsg6623.angle;
-	if(id->FirstEnter==1) 
-	{
-			id->lastRead = ThisAngle;
-			id->RealAngle = -(GM_PITCH_ZERO-ThisAngle) / 8192.0 * 360.0;
-			id->FirstEnter = 0;
-			return;
+		
+	//初始化时按照编码器复位
+	if(id->FirstEnter==1) {
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
 	}
-	//处理编码器值0-8191突变
-	if(ThisAngle<=id->lastRead)
-	{
-		if((id->lastRead-ThisAngle)>4000)//编码器上溢
-			id->RealAngle = id->RealAngle + (ThisAngle+8192-id->lastRead) * 360 / 8192.0;
-		else//正常
-			id->RealAngle = id->RealAngle - (id->lastRead - ThisAngle) * 360 / 8192.0;
-	}
-	else
-	{
-		if((ThisAngle-id->lastRead)>4000)//编码器下溢
-			id->RealAngle = id->RealAngle - (id->lastRead+8192-ThisAngle) *360 / 8192.0;
-		else//正常
-			id->RealAngle = id->RealAngle + (ThisAngle - id->lastRead) * 360 / 8192.0;
-	}
-	id->lastRead=ThisAngle;
-	NORMALIZE_ANGLE180(id->RealAngle);
+	
+	//这里潜藏了一个使用编码器模式的bug, 如果在跑了一段时间后遥控进入编码器模式TargetAngle可能很大，在编写这种模式时要注意有初次进入的处理
+	#ifdef SHOOT_TEST
+	id->RealAngle = id->EncoderAngle;;
 	#endif
 	
-	float 	ThisSpeed = -imu.wy;
-	MINMAX(id->TargetAngle,-20.0f,15.0f);
-	//上坡时不能按照IMU限位
-	//MINMAX(id->TargetAngle, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 - 20.0f, id->RealAngle - (id->RxMsg6623.angle - GM_PITCH_ZERO) * 360.0 / 8192.0 + 15.0f);
-	//使得pitch轴在初始化时缓慢复位
+	//限位
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
+	
+	//初始化时缓慢复位
+	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
+	if(GMYReseted==0) id->positionPID.outputMax = 0.5;
+	else id->positionPID.outputMax = 10.0;
+
+	id->Intensity = -PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	//id->Intensity=0;
+
+}
+
+
+//Pitch轴纯靠IMU反馈，且不需要角度突变处理
+//Pitch轴 TargetAngle 角度，角速度仰为正，俯为负
+void ControlGMP(MotorINFO* id)
+{
+	if(id==0) return;
+	id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
+	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
+	
+	#ifndef SHOOT_TEST
+	id->RealAngle = -imu.pit;
+	#else
+	id->RealAngle = id->EncoderAngle;
+	#endif
+	float Speed = imu.wy;
+	
+	//限位
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 15.0f, id->RealAngle - id->EncoderAngle + 30.0f);
+	
+	//初始化时缓慢复位
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
-	if(GMPReseted==0) id->positionPID.outputMax = 1.5;
+	if(GMPReseted==0) id->positionPID.outputMax = 1.0;
 	else id->positionPID.outputMax = 10.0;
 	
-	#ifndef SHOOT_TEST
-	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
-	#else
-	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,-id->RealAngle,ThisSpeed);
-	#endif
-	//MINMAX(id->Intensity,-id->speedPID.outputMax,id->speedPID.outputMax);
+	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+
 	//id->Intensity=0;
 }
 

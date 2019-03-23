@@ -28,14 +28,14 @@
 
 #ifdef INFANTRY3
 #define GM_PITCH_GRAVITY_COMPENSATION 1400
-#define GM_PITCH_ZERO 	4340
-#define GM_YAW_ZERO 	5600
+#define GM_PITCH_ZERO 	4976
+#define GM_YAW_ZERO 	3536
 #endif
 
 #ifdef GM_TEST
-#define GM_PITCH_GRAVITY_COMPENSATION -150
-#define GM_PITCH_ZERO 	6700
-#define GM_YAW_ZERO 	1900
+#define GM_PITCH_GRAVITY_COMPENSATION 0
+#define GM_PITCH_ZERO 	4976
+#define GM_YAW_ZERO 	3581
 #endif
 
 #define CHASSIS_SPEED_ATTENUATION   (1.30f)
@@ -105,8 +105,8 @@ typedef struct MotorINFO
 	fw_PID_Regulator_t 	speedPID;
 	PID_Regulator_t		offical_speedPID;
 	int16_t				Intensity;
-	float					encoderAngle;
-	float					encoderLastAngle;
+	float					EncoderAngle;
+	float					EncoderLastAngle;
 }MotorINFO;
 
 #define Normal_MOTORINFO_Init(rdc,func,ppid,spid)\
