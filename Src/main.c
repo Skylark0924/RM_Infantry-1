@@ -165,6 +165,10 @@ int main(void)
 	init_quaternion();
 	imu_temp_ctrl_init();
 	/*****陀螺仪初始化结束*****/
+	/*****云台初始化回中*****/
+//	InitGimbalState();
+	/*****云台初始化回中结束***/
+	
 	MX_IWDG_Init();							//Cube配置完记得注释掉上面自动生成的看门狗初始化函数
 	#ifdef	USE_AUTOAIM
 		InitAutoAim();

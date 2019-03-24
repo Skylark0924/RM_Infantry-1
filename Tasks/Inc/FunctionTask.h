@@ -117,4 +117,5 @@ void ChassisTwist(void);
 void ChassisDeTwist(void);
 void LJHTwist(void);
 
+void InitGimbalState(void)
 #endif /*__FUNCTIONTASK_H*/

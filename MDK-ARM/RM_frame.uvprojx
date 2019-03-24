@@ -577,6 +577,11 @@
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\ServoTask.c</FilePath>
             </File>
+            <File>
+              <FileName>drivers_ramp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers_ramp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

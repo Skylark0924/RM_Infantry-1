@@ -26,7 +26,7 @@
 	{0.0}, \
 	&fuzzy_PID_Calc, &fuzzy_PID_Reset \
 }
-typedef __packed struct fuzzy_PID_Regulator_t
+struct fuzzy_PID_Regulator_t
 {
 	float target;
 	float feedback;

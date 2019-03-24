@@ -17,6 +17,7 @@ MouseMode_e MouseRMode = NO_CLICK;
 RampGen_t LRSpeedRamp = RAMP_GEN_DAFAULT;   	//斜坡函数
 RampGen_t FBSpeedRamp = RAMP_GEN_DAFAULT;
 ChassisSpeed_Ref_t ChassisSpeedRef; 
+uint8_t auto_init_f;
 
 int ChassisTwistGapAngle = 0;
 
@@ -683,4 +684,49 @@ void ChassisDeTwist(void)
 void LJHTwist(void)
 {
 	ChassisTwist();
+}
+
+
+//获取云台编码器角度
+static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
+{
+  int16_t tmp = 0;
+  if (center_offset >= 4096)
+  {
+    if (raw_ecd > center_offset - 4096)
+      tmp = raw_ecd - center_offset;
+    else
+      tmp = raw_ecd + 8192 - center_offset;
+  }
+  else
+  {
+    if (raw_ecd > center_offset + 4096)
+      tmp = raw_ecd - 8192 - center_offset;
+    else
+      tmp = raw_ecd - center_offset;
+  }
+  return tmp;
+}
+/*****云台初始化回中*****/
+void InitGimbalState(void)
+{
+//	float center_offset_pit, center_offset_yaw;
+//	
+//	
+//	
+//	if (auto_init_f == 0)
+//  {
+//		//gimbal_set_pitch_angle(pgimbal, pgimbal->ecd_angle.pitch * (1 - ramp_calculate(&pitch_ramp)));
+//    {
+//      if (fabs(pgimbal->ecd_angle.pitch) < 1.5f)
+//      {
+//        gimbal_yaw_enable(pgimbal);
+//        gimbal_set_yaw_angle(pgimbal, pgimbal->ecd_angle.yaw * (1 - ramp_calculate(&yaw_ramp)), 0);
+//        if (fabs(pgimbal->ecd_angle.yaw) < 1.5f)
+//        {
+//          auto_init_f = 1;
+//        }
+//      }
+//    }
+//  }
 }
