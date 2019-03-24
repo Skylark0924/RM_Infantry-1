@@ -715,3 +715,4 @@ void mpu_heat_ctrl(uint16_t pwm_pulse)
 {
   IMU_PWM_PULSE = pwm_pulse;
 }
+/* END imu temperature control */

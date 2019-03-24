@@ -10,13 +10,12 @@
       <TargetName>RM_frame</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5050106::V5.05 update 1 (build 106)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F427IIHx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.13.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.12.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IRAM(0x20000000-0x2002FFFF) IRAM2(0x10000000-0x1000FFFF) IROM(0x8000000-0x81FFFFF) CLOCK(25000000) FPU2 CPUTYPE("Cortex-M4")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -184,7 +183,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -325,7 +323,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -338,7 +335,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                       ../Drivers/STM32F4xx_HAL_Driver/Inc;                       ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                       ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                       ../Drivers/CMSIS/Include;                       ../Tasks/Inc</IncludePath>
+              <IncludePath>../Inc;                        ../Drivers/STM32F4xx_HAL_Driver/Inc;                        ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                        ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                        ../Drivers/CMSIS/Include;                        ../Tasks/Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -533,14 +530,14 @@
               <FilePath>..\Tasks\Src\UpperTask.c</FilePath>
             </File>
             <File>
-              <FileName>AutoAimTask.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\AutoAimTask.c</FilePath>
-            </File>
-            <File>
               <FileName>PowerLimitationTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\PowerLimitationTask.c</FilePath>
+            </File>
+            <File>
+              <FileName>AutoAimTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Tasks\Src\AutoAimTask.c</FilePath>
             </File>
             <File>
               <FileName>GyroReadTask.c</FileName>

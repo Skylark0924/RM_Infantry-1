@@ -57,17 +57,15 @@ void WorkStateFSM(void)
 	{
 		case PREPARE_STATE:				//准备模式
 		{
-			//if (inputmode == STOP) WorkState = STOP_STATE;
 			normal_time = 0;
 			if(prepare_time < 2000) prepare_time++;	
-			if(prepare_time >= 2000 && imu.InitFinish == 1 && isCan11FirstRx == 1 && isCan12FirstRx == 1 && isCan21FirstRx == 1 && isCan22FirstRx == 1)//开机二秒后且imu初始化完成且所有can电机上电完成后进入正常模式
-			//if(prepare_time >= 3000)//开机二秒后且imu初始化完成且所有can电机上电完成后进入正常模式
+			//开机二秒后且imu初始化完成且所有can电机上电完成后进入正常模式
+			if(prepare_time >= 2000 && imu.InitFinish == 1 && isCan11FirstRx == 1 && isCan12FirstRx == 1 && isCan21FirstRx == 1 && isCan22FirstRx == 1)
 			{
 				playMusicSuperMario();
 				CMRotatePID.Reset(&CMRotatePID);
 				if(inputmode == STOP) WorkState = STOP_STATE;
 				else WorkState = NORMAL_STATE;
-				//WorkState = NORMAL_STATE;
 				prepare_time = 0;
 			}
 		}break;
@@ -170,7 +168,6 @@ void controlLoop()
 		#ifdef CAN11
 		setCAN11();
 		#endif 
-		//GMY.Intensity = 10000;
 		#ifdef CAN12
 		setCAN12();
 		#endif
