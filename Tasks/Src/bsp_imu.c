@@ -295,9 +295,9 @@ void mpu_get_data()
 {
     mpu_read_bytes(MPU6500_ACCEL_XOUT_H, mpu_buff, 14);
 
-    mpu_data.ax   = mpu_buff[0] << 8 | mpu_buff[1];
-    mpu_data.ay   = mpu_buff[2] << 8 | mpu_buff[3];
-    mpu_data.az   = mpu_buff[4] << 8 | mpu_buff[5];
+    mpu_data.ax   = mpu_buff[0] << 8 | mpu_buff[1] - mpu_data.ax_offset;
+    mpu_data.ay   = mpu_buff[2] << 8 | mpu_buff[3] - mpu_data.ay_offset;
+    mpu_data.az   = mpu_buff[4] << 8 | mpu_buff[5] - mpu_data.az_offset;
     mpu_data.temp = mpu_buff[6] << 8 | mpu_buff[7];
 
     mpu_data.gx = ((mpu_buff[8]  << 8 | mpu_buff[9])  - mpu_data.gx_offset);
@@ -310,7 +310,11 @@ void mpu_get_data()
     memcpy(&imu.ax, &mpu_data.ax, 6 * sizeof(int16_t));
 	
     imu.temp = 21 + mpu_data.temp / 333.87f;
-	  /* 2000dps -> rad/s */
+
+	  imu.ax = mpu_data.ax / (4096.0f / 9.80665f); //8g -> m/s^2
+		imu.ay = mpu_data.ay / (4096.0f / 9.80665f); //8g -> m/s^2
+		imu.az = mpu_data.az / (4096.0f / 9.80665f); //8g -> m/s^2
+			  /* 2000dps -> rad/s */
 	  imu.wx   = mpu_data.gx / 16.384f / 57.3f; 
     imu.wy   = mpu_data.gy / 16.384f / 57.3f; 
     imu.wz   = mpu_data.gz / 16.384f / 57.3f;
@@ -392,13 +396,13 @@ void mpu_offset_call(void)
 
 		mpu_data.ax_offset += mpu_buff[0] << 8 | mpu_buff[1];
 		mpu_data.ay_offset += mpu_buff[2] << 8 | mpu_buff[3];
-		mpu_data.az_offset += mpu_buff[4] << 8 | mpu_buff[5];
+		mpu_data.az_offset += mpu_buff[4] << 8 | mpu_buff[5]-4096;
 	
 		mpu_data.gx_offset += mpu_buff[8]  << 8 | mpu_buff[9];
 		mpu_data.gy_offset += mpu_buff[10] << 8 | mpu_buff[11];
 		mpu_data.gz_offset += mpu_buff[12] << 8 | mpu_buff[13];
 
-		MPU_DELAY(5);
+		MPU_DELAY(2);
 	}
 	mpu_data.ax_offset=mpu_data.ax_offset / 300;
 	mpu_data.ay_offset=mpu_data.ay_offset / 300;
@@ -696,8 +700,8 @@ pid_t pid_imu_tmp       = {0};
 
 void imu_temp_ctrl_init(void)
 {
-	  PID_struct_init(&pid_imu_tmp, POSITION_PID, 300, 150,
-                  10, 1, 0);
+	  PID_struct_init(&pid_imu_tmp, POSITION_PID, 2000, 500,
+                  1100, 10, 0);
 }
 
 void imu_temp_keep(void)
