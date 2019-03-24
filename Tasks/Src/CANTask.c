@@ -50,6 +50,10 @@ void InitCanReception()
 	isCan22FirstRx = 1;
 	#endif
 	
+	#ifdef CAN12
+		can1_type = 2;
+	#endif
+	
 	//http://www.eeworld.com.cn/mcu/article_2016122732674_3.html
 	hcan1.pRxMsg = &Can1RxMsg;
 	/*##-- Configure the CAN1 Filter ###########################################*/

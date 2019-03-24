@@ -323,7 +323,9 @@ void setCAN12()
 			Error_Handler();
 		}
 		can1_update = 0;
+		#ifdef CAN11
 		can1_type = 1;
+		#endif 
 		HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
 		HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);

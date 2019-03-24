@@ -151,7 +151,7 @@ void RemoteControlProcess(Remote *rc)
 			ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF ;
 		}
-		GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
@@ -179,7 +179,7 @@ void RemoteControlProcess(Remote *rc)
 	{
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
-		GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
