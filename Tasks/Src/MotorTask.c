@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : CANMotot.c
-  * Description        : CANµç»úÍ³Ò»Çý¶¯ÈÎÎñ
+  * Description        : CANç”µæœºç»Ÿä¸€é©±åŠ¨ä»»åŠ¡
   ******************************************************************************
   *
   * Copyright (c) 2018 Team TPP-Shanghai Jiao Tong University
@@ -56,8 +56,9 @@ MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(4000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));											
 #endif
 
-
-
+//MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
+//									   fw_PID_INIT(3.29,2.39,1.13, 10.0, 10.0, 10.0, 10.0),
+//									   fw_PID_INIT(22.1,27.43,0.022, 5000.0, 15000.0, 15000.0, 6000.0));
 //*************************************************************************
 //			Normal_MOTORINFO_Init(rdc,func,ppid,spid)
 //*************************************************************************
@@ -76,23 +77,23 @@ void ControlNM(MotorINFO* id)
 	{		
 		uint16_t 	ThisAngle;	
 		double 		ThisSpeed;	
-		ThisAngle = id->RxMsgC6x0.angle;				//Î´´¦Àí½Ç¶È
+		ThisAngle = id->RxMsgC6x0.angle;				//æœªå¤„ç†è§’åº¦
 		if(id->FirstEnter==1) {id->lastRead = ThisAngle;id->FirstEnter = 0;return;}
 		if(ThisAngle<=id->lastRead)
 		{
-			if((id->lastRead-ThisAngle)>4000)//±àÂëÆ÷ÉÏÒç
+			if((id->lastRead-ThisAngle)>4000)//ç¼–ç å™¨ä¸Šæº¢
 				id->RealAngle = id->RealAngle + (ThisAngle+8192-id->lastRead) * 360 / 8192.0 / id->ReductionRate;
-			else//Õý³£
+			else//æ­£å¸¸
 				id->RealAngle = id->RealAngle - (id->lastRead - ThisAngle) * 360 / 8192.0 / id->ReductionRate;
 		}
 		else
 		{
-			if((ThisAngle-id->lastRead)>4000)//±àÂëÆ÷ÏÂÒç
+			if((ThisAngle-id->lastRead)>4000)//ç¼–ç å™¨ä¸‹æº¢
 				id->RealAngle = id->RealAngle - (id->lastRead+8192-ThisAngle) *360 / 8192.0 / id->ReductionRate;
-			else//Õý³£
+			else//æ­£å¸¸
 				id->RealAngle = id->RealAngle + (ThisAngle - id->lastRead) * 360 / 8192.0 / id->ReductionRate;
 		}
-		ThisSpeed = id->RxMsgC6x0.RotateSpeed * 6;		//µ¥Î»£º¶ÈÃ¿Ãë
+		ThisSpeed = id->RxMsgC6x0.RotateSpeed * 6;		//å•ä½ï¼šåº¦æ¯ç§’
 		
 		id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
 		
@@ -113,23 +114,23 @@ void ControlSTIR(MotorINFO* id)
 	{		
 		uint16_t 	ThisAngle;	
 		double 		ThisSpeed;	
-		ThisAngle = id->RxMsgC6x0.angle;				//Î´´¦Àí½Ç¶È
+		ThisAngle = id->RxMsgC6x0.angle;				//æœªå¤„ç†è§’åº¦
 		if(id->FirstEnter==1) {id->lastRead = ThisAngle;id->FirstEnter = 0;return;}
 		if(ThisAngle<=id->lastRead)
 		{
-			if((id->lastRead-ThisAngle)>4000)//±àÂëÆ÷ÉÏÒç
+			if((id->lastRead-ThisAngle)>4000)//ç¼–ç å™¨ä¸Šæº¢
 				id->RealAngle = id->RealAngle + (ThisAngle+8192-id->lastRead) * 360 / 8192.0 / id->ReductionRate;
-			else//Õý³£
+			else//æ­£å¸¸
 				id->RealAngle = id->RealAngle - (id->lastRead - ThisAngle) * 360 / 8192.0 / id->ReductionRate;
 		}
 		else
 		{
-			if((ThisAngle-id->lastRead)>4000)//±àÂëÆ÷ÏÂÒç
+			if((ThisAngle-id->lastRead)>4000)//ç¼–ç å™¨ä¸‹æº¢
 				id->RealAngle = id->RealAngle - (id->lastRead+8192-ThisAngle) *360 / 8192.0 / id->ReductionRate;
-			else//Õý³£
+			else//æ­£å¸¸
 				id->RealAngle = id->RealAngle + (ThisAngle - id->lastRead) * 360 / 8192.0 / id->ReductionRate;
 		}
-		ThisSpeed = id->RxMsgC6x0.RotateSpeed;		//µ¥Î»£º¶ÈÃ¿Ãë
+		ThisSpeed = id->RxMsgC6x0.RotateSpeed;		//å•ä½ï¼šåº¦æ¯ç§’
 		
 		id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
 		
@@ -144,7 +145,7 @@ void ControlSTIR(MotorINFO* id)
 
 void ControlCM(MotorINFO* id)
 {
-	//TargetAngle ´ú×÷ÎªÄ¿±êËÙ¶È
+	//TargetAngle ä»£ä½œä¸ºç›®æ ‡é€Ÿåº¦
 	if(id==0) return;
 	id->offical_speedPID.ref = (float)(id->TargetAngle);
 	id->offical_speedPID.fdb = id->RxMsgC6x0.RotateSpeed;
@@ -152,7 +153,7 @@ void ControlCM(MotorINFO* id)
 	id->Intensity=(1.30f)*id->offical_speedPID.output;
 }
 
-//³¯³µÍ··½Ïò£¬YawÖá½Ç¶È&½ÇËÙ¶ÈÏò×óÎªÕý£¬ÏòÓÒÎª¸º
+//æœè½¦å¤´æ–¹å‘ï¼ŒYawè½´è§’åº¦&è§’é€Ÿåº¦å‘å·¦ä¸ºæ­£ï¼Œå‘å³ä¸ºè´Ÿ
 void ControlGMY(MotorINFO* id)
 {
 	if(id==0) return;
@@ -204,17 +205,17 @@ void ControlGMY(MotorINFO* id)
 //		return;
 //	}
 	
-	//ÕâÀïÇ±²ØÁËÒ»¸öÊ¹ÓÃ±àÂëÆ÷Ä£Ê½µÄbug, Èç¹ûÔÚÅÜÁËÒ»¶ÎÊ±¼äºóÒ£¿Ø½øÈë±àÂëÆ÷Ä£Ê½£TTargetAngle¿ÉÄÜºÜ´ó£¬ÔÚ±àÐ´ÕâÖÖÄ£Ê½Ê±Òª×¢ÒâÓÐ³õ´Î½øÈëµÄ´¦Àí
+	//è¿™é‡Œæ½œè—äº†ä¸€ä¸ªä½¿ç”¨ç¼–ç å™¨æ¨¡å¼çš„bug, å¦‚æžœåœ¨è·‘äº†ä¸€æ®µæ—¶é—´åŽé¥æŽ§è¿›å…¥ç¼–ç å™¨æ¨¡å¼î–šTargetAngleå¯èƒ½å¾ˆå¤§ï¼Œåœ¨ç¼–å†™è¿™ç§æ¨¡å¼æ—¶è¦æ³¨æ„æœ‰åˆæ¬¡è¿›å…¥çš„å¤„ç†
 	#ifdef SHOOT_TEST
 	id->RealAngle = id->EncoderAngle;;
 	#endif
 	
-	//ÏÞÎ»
+	//é™ä½
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	//MINMAX(id->TargetAngle, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0f / 8192.0f / id->ReductionRate - 45.0f, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 45.0f);
 	
 	
-	//³õÊ¼»¯Ê±»ºÂý¸´Î»
+	//åˆå§‹åŒ–æ—¶ç¼“æ…¢å¤ä½
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
 	if(GMYReseted==0) id->positionPID.outputMax = 0.5;
 	else id->positionPID.outputMax = 10.0;
@@ -229,8 +230,8 @@ void ControlGMY(MotorINFO* id)
 }
 
 
-//PitchÖá´¿¿¿IMU·´À¡£¬ÇÒ²»ÐèÒª½Ç¶ÈÍ»±ä´¦Àí
-//PitchÖá TargetAngle ½Ç¶È£¬½ÇËÙ¶ÈÑöÎªÕý£¬¸©Îª¸º
+//Pitchè½´çº¯é IMUåé¦ˆï¼Œä¸”ä¸éœ€è¦è§’åº¦çªå˜å¤„ç†
+//Pitchè½´ TargetAngle è§’åº¦ï¼Œè§’é€Ÿåº¦ä»°ä¸ºæ­£ï¼Œä¿¯ä¸ºè´Ÿ
 void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
@@ -256,7 +257,7 @@ void ControlGMP(MotorINFO* id)
 	//ÏÞÎ»£¬¸©½Ç8¶È£¬Ñö½Ç30¶È
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
-	//³õÊ¼»¯Ê±»ºÂý¸´Î»
+	//åˆå§‹åŒ–æ—¶ç¼“æ…¢å¤ä½
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
 	if(GMPReseted==0) id->positionPID.outputMax = 1.6;
 	else id->positionPID.outputMax = 10.0;
