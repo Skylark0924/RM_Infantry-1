@@ -37,7 +37,7 @@ int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
 int16_t FrictionLSpeedHigh = -8000;
 int8_t aimcount=0, chassiscount=0, servocount=0;
-extern uint8_t startUp;
+
 
 //≥ı ºªØ
 void FunctionTaskInit()

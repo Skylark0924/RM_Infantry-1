@@ -39,19 +39,24 @@ MotorINFO FRICR = Chassis_MOTORINFO_Init(&ControlCM,FRIC_MOTOR_SPEED_PID_DEFAULT
 //		     Gimbal_MOTORINFO_Init(rdc,func,ppid,spid)
 //************************************************************************
 //使用云台电机时，请务必确定校准过零点
-#ifndef SHOOT_TEST
+#ifdef INFANTRY3
 MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
 									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
 									   fw_PID_INIT(1500,80,0, 10000.0, 10000.0, 10000.0, 5000.0));
-#else 
-MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
-									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
-									   fw_PID_INIT(1000,80,0, 10000.0, 10000.0, 10000.0, 5000.0));
-#endif
-
 MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(0.3,0,0.1, 10.0, 10.0, 10.0, 10.0),
 									   fw_PID_INIT(3000,20,30, 5000.0, 15000.0, 15000.0, 6000.0));
+#elif defined GM_TEST 
+MotorINFO GMP  = Normal_MOTORINFO_Init(1.0,&ControlGMP,
+									   fw_PID_INIT(1.0,0.1,0.3, 0.0, 10.0, 10.0, 10.0),
+//									   fw_PID_INIT(5000.0,80.0,300.0, 50000.0, 50000.0, 50000.0, 30000.0));
+											fw_PID_INIT(3000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
+MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
+									   fw_PID_INIT(1.0,0.1,0.2,0.0, 10.0, 10.0, 10.0),
+									   fw_PID_INIT(4000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));											
+#endif
+
+
 
 //*************************************************************************
 //			Normal_MOTORINFO_Init(rdc,func,ppid,spid)
@@ -63,8 +68,6 @@ MotorINFO STIR = Normal_MOTORINFO_Init(36.0,&ControlSTIR,
 
 MotorINFO* can1[8]={&FRICL,&FRICR,0,0,&GMY,&GMP,&STIR,0};
 MotorINFO* can2[8]={&CMFL,&CMFR,&CMBL,&CMBR,0,0,0,0};
-
-
 
 void ControlNM(MotorINFO* id)
 {
@@ -154,12 +157,27 @@ void ControlGMY(MotorINFO* id)
 {
 	if(id==0) return;
 	
+	#ifdef INFANTRY3
 	id->EncoderAngle = (id->RxMsg6623.angle - GM_YAW_ZERO)/8192.0*360.0;
+	#elif defined GM_TEST
+	id->EncoderAngle = (id->RxMsgC6x0.angle - GM_YAW_ZERO)/8192.0*360.0;
+	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
-	float 	ThisAngle = -imu.yaw ;
+	float 	ThisAngle = -imu.yaw;
 	float 	Speed = imu.wz;		
 
+			
+	//初始化时按照编码器复位
+	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
+		id->lastRead = id->EncoderAngle;
+		//if(GMYReseted) id->FirstEnter = 0;
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
+	}
+	
 	//角度由0-360突变处理
 	if(ThisAngle <= id->lastRead)
 	{
@@ -175,15 +193,16 @@ void ControlGMY(MotorINFO* id)
 		else
 			 id->RealAngle += (ThisAngle - id->lastRead);
 	}
-	id->lastRead = ThisAngle ;
+	id->lastRead = ThisAngle;
 
-		
-	//初始化时按照编码器复位
-	if(id->FirstEnter==1) {
-		id->RealAngle = id->EncoderAngle;
-		id->FirstEnter = 0;
-		return;
-	}
+	
+//	//初始化时按照编码器复位
+//	if(id->FirstEnter==1) {
+//		id->RealAngle = id->EncoderAngle;
+//		//if(GMYReseted) id->FirstEnter = 0;
+//	  id->FirstEnter = 0;
+//		return;
+//	}
 	
 	//这里潜藏了一个使用编码器模式的bug, 如果在跑了一段时间后遥控进入编码器模式TargetAngle可能很大，在编写这种模式时要注意有初次进入的处理
 	#ifdef SHOOT_TEST
@@ -192,13 +211,19 @@ void ControlGMY(MotorINFO* id)
 	
 	//限位
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
+	//MINMAX(id->TargetAngle, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0f / 8192.0f / id->ReductionRate - 45.0f, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 45.0f);
+	
 	
 	//初始化时缓慢复位
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
 	if(GMYReseted==0) id->positionPID.outputMax = 0.5;
 	else id->positionPID.outputMax = 10.0;
-
+	
+	#ifdef INFANTRY3
 	id->Intensity = -PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	#elif defined GM_TEST
+	id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	#endif
 	//id->Intensity=0;
 
 }
@@ -209,22 +234,31 @@ void ControlGMY(MotorINFO* id)
 void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
-	id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
+	#ifdef INFANTRY3
+		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
+	#elif defined GM_TEST
+		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/8192.0*360.0;
+	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
 	
-	#ifndef SHOOT_TEST
-	id->RealAngle = -imu.pit;
-	#else
-	id->RealAngle = id->EncoderAngle;
+	#ifdef INFANTRY3
+		id->RealAngle = -imu.pit;
+		float Speed = imu.wy;
+	#elif defined GM_TEST
+		id->RealAngle = -imu.rol;
+		float Speed = -imu.wx;
 	#endif
-	float Speed = imu.wy;
 	
-	//限位
-	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 15.0f, id->RealAngle - id->EncoderAngle + 30.0f);
+	#ifdef SHOOT_TEST
+		id->RealAngle = id->EncoderAngle;
+	#endif
+	
+	//限位，俯角8度，仰角30度
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
 	//初始化时缓慢复位
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
-	if(GMPReseted==0) id->positionPID.outputMax = 1.0;
+	if(GMPReseted==0) id->positionPID.outputMax = 1.6;
 	else id->positionPID.outputMax = 10.0;
 	
 	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
