@@ -111,7 +111,7 @@ void WorkStateFSM(void)
 void ControlRotate(void)
 {	
 	#ifdef USE_CHASSIS_FOLLOW
-		#ifdef GM_TEST
+		#ifdef INFANTRY3
 			ChassisSpeedRef.rotate_ref = (GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
 		#else
 			ChassisSpeedRef.rotate_ref = (GMY.RxMsgC6x0.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
