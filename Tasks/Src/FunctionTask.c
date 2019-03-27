@@ -37,7 +37,7 @@ int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
 int16_t FrictionLSpeedHigh = -8000;
 int8_t aimcount=0, chassiscount=0, servocount=0;
-extern uint8_t startUp;
+
 
 //≥ı ºªØ
 void FunctionTaskInit()
@@ -151,7 +151,7 @@ void RemoteControlProcess(Remote *rc)
 			ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF ;
 		}
-		GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
@@ -179,7 +179,7 @@ void RemoteControlProcess(Remote *rc)
 	{
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
-		GMP.TargetAngle -= channellcol * RC_GIMBAL_SPEED_REF;
+		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else

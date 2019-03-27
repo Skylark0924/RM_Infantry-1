@@ -38,24 +38,24 @@ MotorINFO FRICR = Chassis_MOTORINFO_Init(&ControlCM,FRIC_MOTOR_SPEED_PID_DEFAULT
 //************************************************************************
 //		     Gimbal_MOTORINFO_Init(rdc,func,ppid,spid)
 //************************************************************************
-//‰ΩøÁî®‰∫ëÂè∞ÁîµÊú∫Êó∂ÔºåËØ∑Âä°ÂøÖÁ°ÆÂÆöÊ†°ÂáÜËøáÈõ∂ÁÇπ
-#ifndef SHOOT_TEST
+// π”√‘∆Ã®µÁª˙ ±£¨«ÎŒÒ±ÿ»∑∂®–£◊ºπ˝¡„µ„
+#ifdef INFANTRY3
 MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
 									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
-									   fw_PID_INIT(1500,80,0, 10000.0, 10000.0, 10000.0, 5000.0));//3000
-//										 fw_PID_INIT(30,0,0, 	100.0, 100.0, 100.0, 2000),
-//									   fw_PID_INIT(60,0.2,0, 10000.0, 10000.0, 10000.0, 30000));//3000
-#else
-MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
-									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
-									   fw_PID_INIT(1000,80,0, 10000.0, 10000.0, 10000.0, 5000.0));//3000
-#endif
-
+									   fw_PID_INIT(1500,80,0, 10000.0, 10000.0, 10000.0, 5000.0));
 MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(0.3,0,0.1, 10.0, 10.0, 10.0, 10.0),
 									   fw_PID_INIT(3000,20,30, 5000.0, 15000.0, 15000.0, 6000.0));
-//									   fw_PID_INIT(50,0,0, 10.0, 10.0, 10.0, 2000),
-//									   fw_PID_INIT(70,0.2,0, 5000.0, 15000.0, 15000.0, 30000));
+#elif defined GM_TEST 
+MotorINFO GMP  = Normal_MOTORINFO_Init(1.0,&ControlGMP,
+									   fw_PID_INIT(1.0,0.1,0.3, 0.0, 10.0, 10.0, 10.0),
+//									   fw_PID_INIT(5000.0,80.0,300.0, 50000.0, 50000.0, 50000.0, 30000.0));
+											fw_PID_INIT(3000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
+MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
+									   fw_PID_INIT(1.0,0.1,0.2,0.0, 10.0, 10.0, 10.0),
+									   fw_PID_INIT(4000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));											
+#endif
+
 //MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
 //									   fw_PID_INIT(3.29,2.39,1.13, 10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(22.1,27.43,0.022, 5000.0, 15000.0, 15000.0, 6000.0));
@@ -69,8 +69,6 @@ MotorINFO STIR = Normal_MOTORINFO_Init(36.0,&ControlSTIR,
 
 MotorINFO* can1[8]={&FRICL,&FRICR,0,0,&GMY,&GMP,&STIR,0};
 MotorINFO* can2[8]={&CMFL,&CMFR,&CMBL,&CMBR,0,0,0,0};
-
-
 
 void ControlNM(MotorINFO* id)
 {
@@ -160,13 +158,28 @@ void ControlGMY(MotorINFO* id)
 {
 	if(id==0) return;
 	
+	#ifdef INFANTRY3
 	id->EncoderAngle = (id->RxMsg6623.angle - GM_YAW_ZERO)/8192.0*360.0;
+	#elif defined GM_TEST
+	id->EncoderAngle = (id->RxMsgC6x0.angle - GM_YAW_ZERO)/8192.0*360.0;
+	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
-	float 	ThisAngle = -imu.yaw ;
+	float 	ThisAngle = -imu.yaw;
 	float 	Speed = imu.wz;		
 
-	//ËßíÂ∫¶Áî±0-360Á™ÅÂèòÂ§ÑÁêÜ
+			
+	//≥ı ºªØ ±∞¥’’±‡¬Î∆˜∏¥Œª
+	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
+		id->lastRead = id->EncoderAngle;
+		//if(GMYReseted) id->FirstEnter = 0;
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
+	}
+	
+	//Ω«∂»”…0-360Õª±‰¥¶¿Ì
 	if(ThisAngle <= id->lastRead)
 	{
 		if((id->lastRead-ThisAngle) > 180)
@@ -181,15 +194,16 @@ void ControlGMY(MotorINFO* id)
 		else
 			 id->RealAngle += (ThisAngle - id->lastRead);
 	}
-	id->lastRead = ThisAngle ;
+	id->lastRead = ThisAngle;
 
-		
-	//ÂàùÂßãÂåñÊó∂ÊåâÁÖßÁºñÁ†ÅÂô®Â§ç‰Ωç
-	if(id->FirstEnter==1) {
-		id->RealAngle = id->EncoderAngle;
-		id->FirstEnter = 0;
-		return;
-	}
+	
+//	//≥ı ºªØ ±∞¥’’±‡¬Î∆˜∏¥Œª
+//	if(id->FirstEnter==1) {
+//		id->RealAngle = id->EncoderAngle;
+//		//if(GMYReseted) id->FirstEnter = 0;
+//	  id->FirstEnter = 0;
+//		return;
+//	}
 	
 	//ËøôÈáåÊΩúËóè‰∫Ü‰∏Ä‰∏™‰ΩøÁî®ÁºñÁ†ÅÂô®Ê®°ÂºèÁöÑbug, Â¶ÇÊûúÂú®Ë∑ë‰∫Ü‰∏ÄÊÆµÊó∂Èó¥ÂêéÈÅ•ÊéßËøõÂÖ•ÁºñÁ†ÅÂô®Ê®°ÂºèÓñöTargetAngleÂèØËÉΩÂæàÂ§ßÔºåÂú®ÁºñÂÜôËøôÁßçÊ®°ÂºèÊó∂Ë¶ÅÊ≥®ÊÑèÊúâÂàùÊ¨°ËøõÂÖ•ÁöÑÂ§ÑÁêÜ
 	#ifdef SHOOT_TEST
@@ -198,13 +212,19 @@ void ControlGMY(MotorINFO* id)
 	
 	//Èôê‰Ωç
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
+	//MINMAX(id->TargetAngle, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0f / 8192.0f / id->ReductionRate - 45.0f, id->RealAngle + (GM_YAW_ZERO - id->RxMsg6623.angle) * 360.0 / 8192.0 / id->ReductionRate + 45.0f);
+	
 	
 	//ÂàùÂßãÂåñÊó∂ÁºìÊÖ¢Â§ç‰Ωç
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
 	if(GMYReseted==0) id->positionPID.outputMax = 0.5;
 	else id->positionPID.outputMax = 10.0;
-
+	
+	#ifdef INFANTRY3
 	id->Intensity = -PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	#elif defined GM_TEST
+	id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	#endif
 	//id->Intensity=0;
 
 }
@@ -215,22 +235,31 @@ void ControlGMY(MotorINFO* id)
 void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
-	id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
-	NORMALIZE_ANGLE180(id->EncoderAngle);//ÁºñÁ†ÅÂô®0-8191Á™ÅÂèòÂ§ÑÁêÜ
-	
-	#ifndef SHOOT_TEST
-	id->RealAngle = -imu.pit;
-	#else
-	id->RealAngle = id->EncoderAngle;
+	#ifdef INFANTRY3
+		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
+	#elif defined GM_TEST
+		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/8192.0*360.0;
 	#endif
-	float Speed = imu.wy;
+	NORMALIZE_ANGLE180(id->EncoderAngle);//±‡¬Î∆˜0-8191Õª±‰¥¶¿Ì
 	
-	//Èôê‰Ωç
-	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 15.0f, id->RealAngle - id->EncoderAngle + 30.0f);
+	#ifdef INFANTRY3
+		id->RealAngle = -imu.pit;
+		float Speed = imu.wy;
+	#elif defined GM_TEST
+		id->RealAngle = -imu.rol;
+		float Speed = -imu.wx;
+	#endif
+	
+	#ifdef SHOOT_TEST
+		id->RealAngle = id->EncoderAngle;
+	#endif
+	
+	//œﬁŒª£¨∏©Ω«8∂»£¨—ˆΩ«30∂»
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
 	//ÂàùÂßãÂåñÊó∂ÁºìÊÖ¢Â§ç‰Ωç
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
-	if(GMPReseted==0) id->positionPID.outputMax = 1.0;
+	if(GMPReseted==0) id->positionPID.outputMax = 1.6;
 	else id->positionPID.outputMax = 10.0;
 	
 	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
@@ -329,7 +358,9 @@ void setCAN12()
 			Error_Handler();
 		}
 		can1_update = 0;
+		#ifdef CAN11
 		can1_type = 1;
+		#endif 
 		HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
 		HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);

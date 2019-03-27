@@ -111,7 +111,11 @@ void WorkStateFSM(void)
 void ControlRotate(void)
 {	
 	#ifdef USE_CHASSIS_FOLLOW
-		ChassisSpeedRef.rotate_ref=(GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
+		#ifdef GM_TEST
+			ChassisSpeedRef.rotate_ref = (GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
+		#else
+			ChassisSpeedRef.rotate_ref = (GMY.RxMsgC6x0.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
+		#endif
 		NORMALIZE_ANGLE180(ChassisSpeedRef.rotate_ref);
 	#endif
 	CMRotatePID.ref = 0;
@@ -215,7 +219,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		
 		HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
 	}
-	else if (htim->Instance == htim7.Instance)//ims时钟
+	else if (htim->Instance == htim7.Instance)//1ms时钟
 	{
 		
 		rc_cnt++;

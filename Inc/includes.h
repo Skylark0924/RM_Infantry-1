@@ -12,8 +12,8 @@
 #ifndef __INCLUDES_H
 #define __INCLUDES_H
 
-//#define GM_TEST
-#define INFANTRY3
+#define GM_TEST
+//#define INFANTRY3
 
 //#define DEBUG_MODE
 #define USE_AUTOAIM
