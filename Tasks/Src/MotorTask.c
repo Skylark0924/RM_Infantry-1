@@ -16,6 +16,7 @@ void ControlSTIR(MotorINFO *id);
 void ControlCM(MotorINFO *id);
 void ControlGMY(MotorINFO *id);
 void ControlGMP(MotorINFO *id);
+static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 
 uint8_t GMYReseted = 0;
 uint8_t GMPReseted = 0;
@@ -159,13 +160,13 @@ void ControlGMY(MotorINFO* id)
 	if(id==0) return;
 	
 	#ifdef INFANTRY3
-	id->EncoderAngle = (id->RxMsg6623.angle - GM_YAW_ZERO)/8192.0*360.0;
+	id->EncoderAngle = (id->RxMsg6623.angle - GM_YAW_ZERO)/ENCODER_ANGLE_RATIO;
 	#elif defined GM_TEST
-	id->EncoderAngle = (id->RxMsgC6x0.angle - GM_YAW_ZERO)/8192.0*360.0;
+	id->EncoderAngle = (id->RxMsgC6x0.angle - GM_YAW_ZERO)/ENCODER_ANGLE_RATIO;
 	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
-	float 	ThisAngle = -imu.yaw;
+	float 	ThisAngle = gimbal_get_ecd_angle(id->RxMsgC6x0.angle, GM_YAW_ZERO) / ENCODER_ANGLE_RATIO;
 	float 	Speed = imu.wz;		
 
 			
@@ -180,22 +181,24 @@ void ControlGMY(MotorINFO* id)
 	}
 	
 	//角度由0-360突变处理
-	if(ThisAngle <= id->lastRead)
-	{
-		if((id->lastRead-ThisAngle) > 180)
-			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
-		else
-			 id->RealAngle -= (id->lastRead - ThisAngle);
-	}
-	else
-	{
-		if((ThisAngle-id->lastRead) > 180)
-			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
-		else
-			 id->RealAngle += (ThisAngle - id->lastRead);
-	}
-	id->lastRead = ThisAngle;
-
+//	if(ThisAngle <= id->lastRead)
+//	{
+//		if((id->lastRead-ThisAngle) > 180)
+//			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
+//		else
+//			 id->RealAngle -= (id->lastRead - ThisAngle);
+//	}
+//	else
+//	{
+//		if((ThisAngle-id->lastRead) > 180)
+//			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
+//		else
+//			 id->RealAngle += (ThisAngle - id->lastRead);
+//	}
+//	id->lastRead = ThisAngle;
+	id->RealAngle = ThisAngle;
+	ANGLE_LIMIT_360(id->RealAngle, ThisAngle);
+  ANGLE_LIMIT_360_TO_180(id->RealAngle);
 	
 //	//初始化时按照编码器复位
 //	if(id->FirstEnter==1) {
@@ -236,9 +239,9 @@ void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
 	#ifdef INFANTRY3
-		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
+		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
 	#elif defined GM_TEST
-		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/8192.0*360.0;
+		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
 	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
 	
@@ -520,3 +523,23 @@ void Motor_ID_Setting()
 		}
 	}
 }
+static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
+{
+	int16_t tmp = 0;
+  if (center_offset >= 4096)
+  {
+    if (raw_ecd > center_offset - 4096)
+      tmp = raw_ecd - center_offset;
+    else
+      tmp = raw_ecd + 8192 - center_offset;
+  }
+  else
+  {
+    if (raw_ecd > center_offset + 4096)
+      tmp = raw_ecd - 8192 - center_offset;
+    else
+      tmp = raw_ecd - center_offset;
+  }
+  return tmp;
+}
+

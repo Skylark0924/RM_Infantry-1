@@ -26,6 +26,27 @@
 #define GM_YAW_ZERO 	115
 #endif
 
+/************************** gimbal parameter *****************************/
+/* the ratio of motor encoder value translate to degree */
+#ifndef ENCODER_ANGLE_RATIO
+  #define ENCODER_ANGLE_RATIO    (8192.0f/360.0f)
+#endif 
+
+#define ANGLE_LIMIT_360(val, angle) \
+  do                                \
+  {                                 \
+    (val) = (angle) - (int)(angle); \
+    (val) += (int)(angle) % 360;    \
+  } while (0)
+
+#define ANGLE_LIMIT_360_TO_180(val) \
+  do                                \
+  {                                 \
+    if((val)>180)                   \
+      (val) -= 360;                 \
+  } while (0)
+
+
 #define CHASSIS_SPEED_ATTENUATION   (1.30f)
 #define NORMALIZE_ANGLE180(angle) angle = ((angle) > 180) ? ((angle) - 360) : (((angle) < -180) ? (angle) + 360 : angle)
 #define CHASSIS_MOTOR_ROTATE_PID_DEFAULT \
