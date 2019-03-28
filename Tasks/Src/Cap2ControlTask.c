@@ -607,7 +607,7 @@ static void Cap_Ctr_RELEASE() {
   * @retval None
   */
 void Cap_Ctr() { // called with period of 2 ms
-	if (RobotState.remainHP < 1 || WorkState == STOP_STATE) {
+	if (RobotState.remainHP < 1 || WorkState == STOP_STATE || VAL__CAP_Power_Voltage < 5.0) {
 		Cap_State_Switch(CAP_STATE_STOP);
 	}
 	else {
