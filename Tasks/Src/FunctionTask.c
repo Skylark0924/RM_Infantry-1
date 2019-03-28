@@ -147,7 +147,7 @@ void RemoteControlProcess(Remote *rc)
 		if(LastState != WorkState){
       Cap_State_Switch(CAP_STATE_RELEASE);
     }
-		if (Cap_Get_Power_Voltage() > 9){
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF*2;
 		  ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF*2;
     }else{
@@ -157,9 +157,15 @@ void RemoteControlProcess(Remote *rc)
 		}
 		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
+			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
+		}else
+		{
+			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		}
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
-		if (Cap_Get_Power_Voltage() > 9){
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
 		}else{
 			ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
