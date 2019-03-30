@@ -26,7 +26,7 @@
 #define PM	 2
 #define PL	 3
 
-#define N 7
+#define N 3
  
  
  
@@ -77,23 +77,23 @@ fuzzyPID fuzzy(float e,float ec)
      int eLeftIndex,ecLeftIndex;
      int eRightIndex,ecRightIndex;
      fuzzyPID   fuzzy_PID;
-     etemp = e > 3.0 ? 0.0 : (e < - 3.0 ? 0.0 : (e >= 0.0 ? (e >= 2.0 ? 2.5: (e >= 1.0 ? 1.5 : 0.5)) : (e >= -1.0 ? -0.5 : (e >= -2.0 ? -1.5 : (e >= -3.0 ? -2.5 : 0.0) ))));
+     etemp = e > 3.0f ? 0.0f : (e < - 3.0f ? 0.0f : (e >= 0.0f ? (e >= 2.0f ? 2.5f: (e >= 1.0f ? 1.5f : 0.5f)) : (e >= -1.0f ? -0.5f : (e >= -2.0f ? -1.5f : (e >= -3.0f ? -2.5f : 0.0f) ))));
  
      eLeftIndex = (int)e;
      eRightIndex = eLeftIndex;
-     eLeftIndex = (int)((etemp-0.5) + 3);        //[-3,3] -> [0,6]
-     eRightIndex = (int)((etemp+0.5) + 3);
+     eLeftIndex = (int)((etemp-0.5f) + 3);        //[-3,3] -> [0,6]
+     eRightIndex = (int)((etemp+0.5f) + 3);
  
-     eLefttemp = etemp == 0.0 ? 0.0:((etemp+0.5)-e);
-     eRighttemp= etemp == 0.0 ? 0.0:( e-(etemp-0.5));
+     eLefttemp = etemp == 0.0f ? 0.0f:((etemp+0.5f)-e);
+     eRighttemp= etemp == 0.0f ? 0.0f:( e-(etemp-0.5f));
  
-     ectemp = ec > 3.0 ? 0.0 : (ec < - 3.0 ? 0.0 : (ec >= 0.0 ? (ec >= 2.0 ? 2.5: (ec >= 1.0 ? 1.5 : 0.5)) : (ec >= -1.0 ? -0.5 : (ec >= -2.0 ? -1.5 : (ec >= -3.0 ? -2.5 : 0.0) ))));
+     ectemp = ec > 3.0f ? 0.0f : (ec < - 3.0f ? 0.0f : (ec >= 0.0f ? (ec >= 2.0f ? 2.5f: (ec >= 1.0f ? 1.5f : 0.5f)) : (ec >= -1.0f ? -0.5f : (ec >= -2.0f ? -1.5f : (ec >= -3.0f ? -2.5f : 0.0f) ))));
  
-     ecLeftIndex = (int)((ectemp-0.5) + 3);        //[-3,3] -> [0,6]
-     ecRightIndex = (int)((ectemp+0.5) + 3);
+     ecLeftIndex = (int)((ectemp-0.5f) + 3);        //[-3,3] -> [0,6]
+     ecRightIndex = (int)((ectemp+0.5f) + 3);
  
-     ecLefttemp =ectemp == 0.0 ? 0.0:((ectemp+0.5)-ec);
-     ecRighttemp=ectemp == 0.0 ? 0.0:( ec-(ectemp-0.5));
+     ecLefttemp =ectemp == 0.0f ? 0.0f:((ectemp+0.5f)-ec);
+     ecRighttemp=ectemp == 0.0f ? 0.0f:( ec-(ectemp-0.5f));
  
 /*************************************反模糊*************************************/
  
@@ -153,7 +153,7 @@ void fuzzy_PID_Calc(fuzzy_PID_Regulator_t *pid){
 	float e=0,ec=0;
 	float ke, kec;
 	float ku_p, ku_i, ku_d;
-	float emax=14, ecmax=14;
+	float emax=20, ecmax=14;
 	
 	ke=N/emax;
 	kec=N/ecmax;

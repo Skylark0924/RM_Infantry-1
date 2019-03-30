@@ -154,9 +154,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 	}
 	else if(UartHandle == &GYRO_UART)
 	{
-		#ifdef USE_GYRO
 		gyroUartRxCpltCallback();
-		#endif
+
 	}
 	else if(UartHandle == &JUDGE_UART)
 	{
