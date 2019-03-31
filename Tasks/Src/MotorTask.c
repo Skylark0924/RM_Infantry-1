@@ -54,7 +54,7 @@ MotorINFO GMP  = Normal_MOTORINFO_Init(1.0,&ControlGMP,
 											fw_PID_INIT(3000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
 MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(1.0,0.1,0.2,0.0, 10.0, 10.0, 10.0),
-									   fw_PID_INIT(4000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));			
+									   fw_PID_INIT(5000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));			
 //MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 //									   fw_PID_INIT(1,0.1,0.001,10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(5000.0,1.0,0, 50000.0, 50000.0, 50000.0, 30000.0));											 
@@ -170,11 +170,11 @@ void ControlGMY(MotorINFO* id)
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
 	gimbal_yaw_gyro_update(id, gyroZAngle+id->EncoderAngle);
-//	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
+	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
 		
 	float   center_offset;
 	float 	yaw;
-	float 	ThisAngle = id->sensor.gyro_angle.yaw;
+	float 	ThisAngle = id->sensor.gyro_angle.yaw+id->EncoderAngle;
 	float 	Speed = imu.wz;		
 	
 	yaw=id->TargetAngle;
@@ -184,29 +184,30 @@ void ControlGMY(MotorINFO* id)
 	//Initialize as encoder
 	if(id->FirstEnter==1) {
 		//id->lastRead = ThisAngle;
-		id->lastRead = id->EncoderAngle;
+//		id->lastRead = id->EncoderAngle;
 		//if(GMYReseted) id->FirstEnter = 0;
 		id->RealAngle = id->EncoderAngle;
 		id->FirstEnter = 0;
 		return;
 	}
 	
+	id->RealAngle = ThisAngle;
 	//އ׈ԉ0-360ͻҤԦm
-	if(ThisAngle <= id->lastRead)
-	{
-		if((id->lastRead-ThisAngle) > 180)
-			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
-		else
-			 id->RealAngle -= (id->lastRead - ThisAngle);
-	}
-	else
-	{
-		if((ThisAngle-id->lastRead) > 180)
-			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
-		else
-			 id->RealAngle += (ThisAngle - id->lastRead);
-	}
-	id->lastRead = ThisAngle;
+//	if(ThisAngle <= id->lastRead)
+//	{
+//		if((id->lastRead-ThisAngle) > 180)
+//			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
+//		else
+//			 id->RealAngle -= (id->lastRead - ThisAngle);
+//	}
+//	else
+//	{
+//		if((ThisAngle-id->lastRead) > 180)
+//			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
+//		else
+//			 id->RealAngle += (ThisAngle - id->lastRead);
+//	}
+//	id->lastRead = ThisAngle;
 
 	
 //	//Եʼۯʱд֕ҠëǷشλ
@@ -224,7 +225,7 @@ void ControlGMY(MotorINFO* id)
 	
 	//Angle Limitation, from -45 to 45 degree
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
-	
+	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
 	//For initializing slowly
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
@@ -531,25 +532,25 @@ void Motor_ID_Setting()
 		}
 	}
 }
-static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
-{
-	int16_t tmp = 0;
-  if (center_offset >= 4096)
-  {
-    if (raw_ecd > center_offset - 4096)
-      tmp = raw_ecd - center_offset;
-    else
-      tmp = raw_ecd + 8192 - center_offset;
-  }
-  else
-  {
-    if (raw_ecd > center_offset + 4096)
-      tmp = raw_ecd - 8192 - center_offset;
-    else
-      tmp = raw_ecd - center_offset;
-  }
-  return tmp;
-}
+//static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
+//{
+//	int16_t tmp = 0;
+//  if (center_offset >= 4096)
+//  {
+//    if (raw_ecd > center_offset - 4096)
+//      tmp = raw_ecd - center_offset;
+//    else
+//      tmp = raw_ecd + 8192 - center_offset;
+//  }
+//  else
+//  {
+//    if (raw_ecd > center_offset + 4096)
+//      tmp = raw_ecd - 8192 - center_offset;
+//    else
+//      tmp = raw_ecd - center_offset;
+//  }
+//  return tmp;
+//}
 
 
 void gimbal_set_yaw_gyro_angle(MotorINFO* id, float yaw)

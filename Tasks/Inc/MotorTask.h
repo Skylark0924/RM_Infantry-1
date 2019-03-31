@@ -55,9 +55,9 @@
 	2.0f,0.0f,0.5f,/*p i d*/\
 	0,0,0,\
 	20,20,20,\
-	0,20,0,0,0,\
+	0,30,0,0,0,\
 	&PID_Calc,&PID_Reset,\
-}
+} 
 
 #define CHASSIS_MOTOR_SPEED_PID_DEFAULT \
 {\
