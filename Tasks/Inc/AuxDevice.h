@@ -21,7 +21,7 @@
 #define RC_UART 					huart1
 #define SERVO_UART				huart2
 #define JUDGE_UART 				huart6
-#define GYRO_UART 				huart7
+#define GYRO_UART 				huart8
 #define AUTOAIM_UART 			huart8
 #define UPPER_UART 				huart8
 
