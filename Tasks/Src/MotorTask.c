@@ -179,22 +179,21 @@ void ControlGMY(MotorINFO* id)
 	
 	yaw=id->TargetAngle;
 	center_offset = ThisAngle - id->EncoderAngle;
-
-
-​			
-​	//Initialize as encoder
-​	if(id->FirstEnter==1) {
-​		//id->lastRead = ThisAngle;
+	
+	
+	//Initialize as encoder
+	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
 //		id->lastRead = id->EncoderAngle;
-​		//if(GMYReseted) id->FirstEnter = 0;
-​		id->RealAngle = id->EncoderAngle;
-​		id->FirstEnter = 0;
-​		return;
-​	}
-​	
+		//if(GMYReseted) id->FirstEnter = 0;
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
+	}
+	
+	
+	id->RealAngle = ThisAngle;
 
-​	id->RealAngle = ThisAngle;
-​	//އ׈ԉ0-360ͻҤԦm
 //	if(ThisAngle <= id->lastRead)
 //	{
 //		if((id->lastRead-ThisAngle) > 180)
@@ -227,7 +226,6 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	
 	//Angle Limitation, from -45 to 45 degree
-	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
 	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
