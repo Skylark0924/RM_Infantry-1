@@ -42,6 +42,7 @@
 #include "iwdg.h"
 #include "adc.h"
 #include "math.h"
+#include "dac.h"
 
 #include "AuxDevice.h"
 #include "RemoteTask.h"
