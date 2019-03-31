@@ -41,6 +41,7 @@
 #include "stm32f4xx_hal.h"
 #include "adc.h"
 #include "can.h"
+#include "dac.h"
 #include "dma.h"
 #include "iwdg.h"
 #include "spi.h"
@@ -132,6 +133,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM8_Init();
   MX_TIM3_Init();
+  MX_DAC_Init();
 
   /* USER CODE BEGIN 2 */
 	//各模块初始化

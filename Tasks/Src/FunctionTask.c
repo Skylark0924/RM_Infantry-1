@@ -56,7 +56,16 @@ void FunctionTaskInit()
 
 void OptionalFunction()
 {
-	PowerLimitation();
+		if (Cap_Get_Cap_State() == CAP_STATE_STOP){
+      CurBased_PowerLimitation(); //基于自测功率的功率限制，适用于充电和停止状态
+		  }else{
+		    if (Cap_Get_Cap_State() == CAP_STATE_RECHARGE || Cap_Get_Cap_State() == CAP_STATE_TEMP_RECHARGE)
+		      CurBased_PowerLimitation();//基于自测功率的功率限制，适用于充电和停止状态
+		      else{
+		        if (Cap_Get_Cap_State() == CAP_STATE_RELEASE)
+		          CapBased_PowerLimitation();//超级电容工作模式下的功率限制
+		      }
+	    }
 }
 
 void Limit_and_Synchronization()
@@ -71,7 +80,7 @@ void Limit_and_Synchronization()
 //******************
 void RemoteControlProcess(Remote *rc)
 {
-	static WorkState_e LastState = NORMAL_STATE;
+	static WorkState_e LastState = STOP_STATE;
 	if(WorkState <= 0) return;
 	//max=660
 	channelrrow = (rc->ch0 - (int16_t)REMOTE_CONTROLLER_STICK_OFFSET); 
@@ -82,10 +91,9 @@ void RemoteControlProcess(Remote *rc)
 	if(WorkState == NORMAL_STATE)
 	{	
 		//for debug SuperC
-
-		if(LastState != WorkState){
-			Cap_State_Switch(CAP_STATE_RECHARGE);
-		}
+    if(LastState != WorkState){
+      Cap_State_Switch(CAP_STATE_RELEASE);
+    }
 
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;				
@@ -131,44 +139,51 @@ void RemoteControlProcess(Remote *rc)
 	
 	if(WorkState == ADDITIONAL_STATE_ONE)
 	{
-		//for debug SuperC
-		if(SuperCTestMode==1)
-		{
-			if(LastState != WorkState){
-				Cap_State_Switch(CAP_STATE_RELEASE);
-			}
-		}
-		else
-		{
-				Cap_State_Switch(CAP_STATE_STOP);
-		}
-		if(Cap_Get_Cap_Voltage()>12 && SuperCTestMode==1){
-			ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF * 2;
-			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF ;
-		}
-		else
-		{
+		//for debug SuperC，暂时用不到了
+//		if(SuperCTestMode==1)
+//		{
+//			
+//		}
+		if(LastState != WorkState){
+      Cap_State_Switch(CAP_STATE_RELEASE);
+    }
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
+		  ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF*2;
+		  ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF*2;
+    }else{
 			ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
-			ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF ;
+		  ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
+		  
 		}
 		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
+			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
+		}else
+		{
+			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		}
 		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
-		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
+		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
+		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
+		}else{
+			ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
+		}
 		#endif
 		
 		ChassisTwistState = 0;
 		
-		if(SuperCTestMode==0)
+		if(SuperCTestMode==1)
 		{
 			ShootState = 1;
 			FRICL.TargetAngle = FrictionLSpeedHigh;
 			FRICR.TargetAngle = -FrictionLSpeedHigh;
+			//打开激光
+		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		}
 
-		//打开激光
-		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
+		
 		
 		#ifdef USE_AUTOAIM
 		aim_mode=1;
@@ -187,26 +202,26 @@ void RemoteControlProcess(Remote *rc)
 		#endif
 		
 		//ChassisTwistState = 0;
+		if (SuperCTestMode==1){
+		  ShootState = 1;
+		  FRICL.TargetAngle = FrictionLSpeedHigh;
+		  FRICR.TargetAngle = -FrictionLSpeedHigh;
 		
-		ShootState = 1;
-		FRICL.TargetAngle = FrictionLSpeedHigh;
-		FRICR.TargetAngle = -FrictionLSpeedHigh;
+		  HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		
-		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
+		  if(STIR.TargetAngle-STIR.RealAngle>-100){Delay(5,{STIR.TargetAngle-=60;});}
+		  else
+		  {
+			  STIR.TargetAngle=STIR.RealAngle+100;
+			  Delay(5,{STIR.TargetAngle-=60;});
+		  }
+		  #ifdef USE_AUTOAIM
+		  aim_mode=1;
+		  AutoAimGMCTRL();
+		  #endif /*USE_AUTOAIM*/
+		}else
+		if(SuperCTestMode == 0) {ChassisTwistState = 1;} //超级电容模式下开启扭腰
 		
-		if(STIR.TargetAngle-STIR.RealAngle>-100){Delay(5,{STIR.TargetAngle-=60;});}
-		else
-		{
-			STIR.TargetAngle=STIR.RealAngle+100;
-			Delay(5,{STIR.TargetAngle-=60;});
-		}
-			
-		if(SuperCTestMode == 1) {ChassisTwistState = 1;} //超级电容模式下开启扭腰
-		
-		#ifdef USE_AUTOAIM
-		aim_mode=1;
-		AutoAimGMCTRL();
-		#endif /*USE_AUTOAIM*/
 	}
 	FreshSuperCState();
 	if(ChassisTwistState)
@@ -603,27 +618,27 @@ void FreshSuperCState(void)
 		HAL_GPIO_WritePin(GPIOF, LED_GREEN_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOE, LED_RED_Pin, GPIO_PIN_SET);
 	}
-	HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin 
-                          |LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin 
-                          |LED1_Pin, GPIO_PIN_RESET);
-	if(Control_SuperCap.C_voltage<1100)
-	{
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin|LED1_Pin, GPIO_PIN_SET);
-	}
-	else if(Control_SuperCap.C_voltage<1300)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<1500)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<1700)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<1800)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<1900)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<2000)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin, GPIO_PIN_SET);
-	else if(Control_SuperCap.C_voltage<2100)
-		HAL_GPIO_WritePin(GPIOG, LED8_Pin, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin 
+//                          |LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin 
+//                          |LED1_Pin, GPIO_PIN_RESET);
+//	if(Control_SuperCap.C_voltage<1100)
+//	{
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin|LED1_Pin, GPIO_PIN_SET);
+//	}
+//	else if(Control_SuperCap.C_voltage<1300)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin|LED2_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<1500)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin|LED3_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<1700)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin|LED4_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<1800)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin|LED5_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<1900)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin|LED6_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<2000)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin|LED7_Pin, GPIO_PIN_SET);
+//	else if(Control_SuperCap.C_voltage<2100)
+//		HAL_GPIO_WritePin(GPIOG, LED8_Pin, GPIO_PIN_SET);
 }
 
 void ChassisTwist(void)

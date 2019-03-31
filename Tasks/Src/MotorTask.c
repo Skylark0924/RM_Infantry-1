@@ -1,13 +1,13 @@
 /**
-  ******************************************************************************
-  * File Name          : CANMotot.c
-  * Description        : CAN电机统一驱动任务
-  ******************************************************************************
+******************************************************************************
+  * File Name          : MotorTask.c
+  * Description        : 电机控制任务
+******************************************************************************
   *
-  * Copyright (c) 2018 Team TPP-Shanghai Jiao Tong University
+  * Copyright (c) 2019 Team JDragon-Shanghai Jiao Tong University
   * All rights reserved.
-  *
-  ******************************************************************************
+    *
+******************************************************************************
   */
 #include "includes.h"
 
@@ -39,7 +39,7 @@ MotorINFO FRICR = Chassis_MOTORINFO_Init(&ControlCM,FRIC_MOTOR_SPEED_PID_DEFAULT
 //************************************************************************
 //		     Gimbal_MOTORINFO_Init(rdc,func,ppid,spid)
 //************************************************************************
-//ʹ����̨���ʱ�������ȷ��У׼�����
+//使用云台电机时，请务必确定校准过零点
 #ifdef INFANTRY3
 MotorINFO GMP  = Gimbal_MOTORINFO_Init(1.0,&ControlGMP,
 									   fw_PID_INIT(0.5,0,0.3, 	100.0, 100.0, 100.0, 10.0),
@@ -81,23 +81,23 @@ void ControlNM(MotorINFO* id)
 	{		
 		uint16_t 	ThisAngle;	
 		double 		ThisSpeed;	
-		ThisAngle = id->RxMsgC6x0.angle;				//未处理角度
+		ThisAngle = id->RxMsgC6x0.angle;				
 		if(id->FirstEnter==1) {id->lastRead = ThisAngle;id->FirstEnter = 0;return;}
 		if(ThisAngle<=id->lastRead)
 		{
-			if((id->lastRead-ThisAngle)>4000)//编码器上溢
+			if((id->lastRead-ThisAngle)>4000)
 				id->RealAngle = id->RealAngle + (ThisAngle+8192-id->lastRead) * 360 / 8192.0 / id->ReductionRate;
-			else//正常
+			else//姝ｅ父
 				id->RealAngle = id->RealAngle - (id->lastRead - ThisAngle) * 360 / 8192.0 / id->ReductionRate;
 		}
 		else
 		{
-			if((ThisAngle-id->lastRead)>4000)//编码器下溢
+			if((ThisAngle-id->lastRead)>4000)
 				id->RealAngle = id->RealAngle - (id->lastRead+8192-ThisAngle) *360 / 8192.0 / id->ReductionRate;
-			else//正常
+			else//姝ｅ父
 				id->RealAngle = id->RealAngle + (ThisAngle - id->lastRead) * 360 / 8192.0 / id->ReductionRate;
 		}
-		ThisSpeed = id->RxMsgC6x0.RotateSpeed * 6;		//单位：度每秒
+		ThisSpeed = id->RxMsgC6x0.RotateSpeed * 6;		
 		
 		id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
 		
@@ -118,23 +118,23 @@ void ControlSTIR(MotorINFO* id)
 	{		
 		uint16_t 	ThisAngle;	
 		double 		ThisSpeed;	
-		ThisAngle = id->RxMsgC6x0.angle;				//未处理角度
+		ThisAngle = id->RxMsgC6x0.angle;				
 		if(id->FirstEnter==1) {id->lastRead = ThisAngle;id->FirstEnter = 0;return;}
 		if(ThisAngle<=id->lastRead)
 		{
-			if((id->lastRead-ThisAngle)>4000)//编码器上溢
+			if((id->lastRead-ThisAngle)>4000)
 				id->RealAngle = id->RealAngle + (ThisAngle+8192-id->lastRead) * 360 / 8192.0 / id->ReductionRate;
-			else//正常
+			else
 				id->RealAngle = id->RealAngle - (id->lastRead - ThisAngle) * 360 / 8192.0 / id->ReductionRate;
 		}
 		else
 		{
-			if((ThisAngle-id->lastRead)>4000)//编码器下溢
+			if((ThisAngle-id->lastRead)>4000)
 				id->RealAngle = id->RealAngle - (id->lastRead+8192-ThisAngle) *360 / 8192.0 / id->ReductionRate;
-			else//正常
+			else
 				id->RealAngle = id->RealAngle + (ThisAngle - id->lastRead) * 360 / 8192.0 / id->ReductionRate;
 		}
-		ThisSpeed = id->RxMsgC6x0.RotateSpeed;		//单位：度每秒
+		ThisSpeed = id->RxMsgC6x0.RotateSpeed;	
 		
 		id->Intensity = PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,ThisSpeed);
 		
@@ -149,7 +149,7 @@ void ControlSTIR(MotorINFO* id)
 
 void ControlCM(MotorINFO* id)
 {
-	//TargetAngle 代作为目标速度
+	//TargetAngle 
 	if(id==0) return;
 	id->offical_speedPID.ref = (float)(id->TargetAngle);
 	id->offical_speedPID.fdb = id->RxMsgC6x0.RotateSpeed;
@@ -180,19 +180,21 @@ void ControlGMY(MotorINFO* id)
 	yaw=id->TargetAngle;
 	center_offset = ThisAngle - id->EncoderAngle;
 
-			
-	//Initialize as encoder
-	if(id->FirstEnter==1) {
-		//id->lastRead = ThisAngle;
+
+​			
+​	//Initialize as encoder
+​	if(id->FirstEnter==1) {
+​		//id->lastRead = ThisAngle;
 //		id->lastRead = id->EncoderAngle;
-		//if(GMYReseted) id->FirstEnter = 0;
-		id->RealAngle = id->EncoderAngle;
-		id->FirstEnter = 0;
-		return;
-	}
-	
-	id->RealAngle = ThisAngle;
-	//އ׈ԉ0-360ͻҤԦm
+​		//if(GMYReseted) id->FirstEnter = 0;
+​		id->RealAngle = id->EncoderAngle;
+​		id->FirstEnter = 0;
+​		return;
+​	}
+​	
+
+​	id->RealAngle = ThisAngle;
+​	//އ׈ԉ0-360ͻҤԦm
 //	if(ThisAngle <= id->lastRead)
 //	{
 //		if((id->lastRead-ThisAngle) > 180)
@@ -209,8 +211,9 @@ void ControlGMY(MotorINFO* id)
 //	}
 //	id->lastRead = ThisAngle;
 
-	
-//	//Եʼۯʱд֕ҠëǷشλ
+
+
+//	//缘始郫时写謺覡毛欠卮位
 //	if(id->FirstEnter==1) {
 //		id->RealAngle = 0;
 //		//if(GMYReseted) id->FirstEnter = 0;
@@ -224,6 +227,7 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	
 	//Angle Limitation, from -45 to 45 degree
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
 	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
@@ -242,8 +246,8 @@ void ControlGMY(MotorINFO* id)
 }
 
 
-//Pitch轴纯靠IMU反馈，且不需要角度突变处理
-//Pitch轴 TargetAngle 角度，角速度仰为正，俯为负
+
+//Pitch, bending up id positive, benging down is negative 
 void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
@@ -252,7 +256,7 @@ void ControlGMP(MotorINFO* id)
 	#elif defined GM_TEST
 		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
 	#endif
-	NORMALIZE_ANGLE180(id->EncoderAngle);//������0-8191ͻ�䴦��
+	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
 	
 	#ifdef INFANTRY3
 		id->RealAngle = -imu.pit;
@@ -266,16 +270,16 @@ void ControlGMP(MotorINFO* id)
 		id->RealAngle = id->EncoderAngle;
 	#endif
 	
-	//��λ������8�ȣ�����30��
+	//限位，俯角8度，仰角30度
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
-	//初始化时缓慢复位
+	///For initializing slowly
 	if(abs(id->RealAngle-id->TargetAngle)<3) GMPReseted = 1;
 	if(GMPReseted==0) id->positionPID.outputMax = 1.6;
 	else id->positionPID.outputMax = 10.0;
 	
 	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
-
+	
 	//id->Intensity=0;
 }
 
@@ -301,7 +305,7 @@ void setCAN11()
 			hcan1.pTxMsg->Data[i*2+1] = (uint8_t)can1[i]->Intensity;
 		}
 	}
-
+	
 	if(can1_update == 1 && can1_type == 1)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -353,7 +357,7 @@ void setCAN12()
 			hcan1.pTxMsg->Data[i*2+1] = (uint8_t)can1[i+4]->Intensity;
 		}
 	}
-
+	
 	if(can1_update == 1 && can1_type == 2)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -405,7 +409,7 @@ void setCAN21()
 			hcan2.pTxMsg->Data[i*2+1] = (uint8_t)can2[i]->Intensity;
 		}
 	}
-
+	
 	if(can2_update == 1 && can2_type == 1)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -457,7 +461,7 @@ void setCAN22()
 			hcan2.pTxMsg->Data[i*2+1] = (uint8_t)can2[i+4]->Intensity;
 		}
 	}
-
+	
 	if(can2_update == 1 && can2_type == 2)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
