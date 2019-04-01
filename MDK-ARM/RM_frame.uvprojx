@@ -587,6 +587,16 @@
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\ServoTask.c</FilePath>
             </File>
+            <File>
+              <FileName>offline_check.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Tasks\Src\offline_check.c</FilePath>
+            </File>
+            <File>
+              <FileName>detect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Tasks\Src\detect.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

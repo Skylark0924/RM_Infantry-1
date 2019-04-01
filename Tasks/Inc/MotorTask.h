@@ -139,10 +139,28 @@ typedef struct MotorINFO
 	gimbal_sensor sensor; 
 }MotorINFO;
 
+typedef struct chassis *gimbal_t;
+struct gimbal
+{
+	MotorINFO GMY;
+	MotorINFO GMP;
+};
 
+typedef struct chassis *chassis_t;
+struct chassis
+{
+	MotorINFO CMFL;
+	MotorINFO CMFR;
+	MotorINFO CMBR;
+	MotorINFO CMBL;
+};
 
-
-
+typedef struct shoot *shoot_t;
+struct shoot
+{
+	MotoINFO FRICL;
+	MotoINFO FRICR;
+};
 
 #define Normal_MOTORINFO_Init(rdc,func,ppid,spid)\
 {\
