@@ -1,13 +1,13 @@
 /**
-  ******************************************************************************
+******************************************************************************
   * File Name          : MotorTask.c
   * Description        : 电机控制任务
-  ******************************************************************************
+******************************************************************************
   *
   * Copyright (c) 2019 Team JDragon-Shanghai Jiao Tong University
   * All rights reserved.
-  *
-  ******************************************************************************
+    *
+******************************************************************************
   */
 #include "includes.h"
 
@@ -54,7 +54,7 @@ MotorINFO GMP  = Normal_MOTORINFO_Init(1.0,&ControlGMP,
 											fw_PID_INIT(3000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
 MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(1.0,0.1,0.2,0.0, 10.0, 10.0, 10.0),
-									   fw_PID_INIT(4000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));			
+									   fw_PID_INIT(5000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));			
 //MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 //									   fw_PID_INIT(1,0.1,0.001,10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(5000.0,1.0,0, 50000.0, 50000.0, 50000.0, 30000.0));											 
@@ -170,45 +170,48 @@ void ControlGMY(MotorINFO* id)
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
 	gimbal_yaw_gyro_update(id, gyroZAngle+id->EncoderAngle);
-//	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
+	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
 		
 	float   center_offset;
 	float 	yaw;
-	float 	ThisAngle = id->sensor.gyro_angle.yaw;
+	float 	ThisAngle = id->sensor.gyro_angle.yaw+id->EncoderAngle;
 	float 	Speed = imu.wz;		
 	
 	yaw=id->TargetAngle;
 	center_offset = ThisAngle - id->EncoderAngle;
-
-			
+	
+	
 	//Initialize as encoder
 	if(id->FirstEnter==1) {
 		//id->lastRead = ThisAngle;
-		id->lastRead = id->EncoderAngle;
+//		id->lastRead = id->EncoderAngle;
 		//if(GMYReseted) id->FirstEnter = 0;
 		id->RealAngle = id->EncoderAngle;
 		id->FirstEnter = 0;
 		return;
 	}
 	
-	//迖讏詨0-360突窑驭m
-	if(ThisAngle <= id->lastRead)
-	{
-		if((id->lastRead-ThisAngle) > 180)
-			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
-		else
-			 id->RealAngle -= (id->lastRead - ThisAngle);
-	}
-	else
-	{
-		if((ThisAngle-id->lastRead) > 180)
-			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
-		else
-			 id->RealAngle += (ThisAngle - id->lastRead);
-	}
-	id->lastRead = ThisAngle;
-
 	
+	id->RealAngle = ThisAngle;
+
+//	if(ThisAngle <= id->lastRead)
+//	{
+//		if((id->lastRead-ThisAngle) > 180)
+//			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
+//		else
+//			 id->RealAngle -= (id->lastRead - ThisAngle);
+//	}
+//	else
+//	{
+//		if((ThisAngle-id->lastRead) > 180)
+//			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
+//		else
+//			 id->RealAngle += (ThisAngle - id->lastRead);
+//	}
+//	id->lastRead = ThisAngle;
+
+
+
 //	//缘始郫时写謺覡毛欠卮位
 //	if(id->FirstEnter==1) {
 //		id->RealAngle = 0;
@@ -223,9 +226,8 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	
 	//Angle Limitation, from -45 to 45 degree
-	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
-	
+	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
 	//For initializing slowly
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
@@ -275,7 +277,7 @@ void ControlGMP(MotorINFO* id)
 	else id->positionPID.outputMax = 10.0;
 	
 	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
-
+	
 	//id->Intensity=0;
 }
 
@@ -301,7 +303,7 @@ void setCAN11()
 			hcan1.pTxMsg->Data[i*2+1] = (uint8_t)can1[i]->Intensity;
 		}
 	}
-
+	
 	if(can1_update == 1 && can1_type == 1)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -353,7 +355,7 @@ void setCAN12()
 			hcan1.pTxMsg->Data[i*2+1] = (uint8_t)can1[i+4]->Intensity;
 		}
 	}
-
+	
 	if(can1_update == 1 && can1_type == 2)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -405,7 +407,7 @@ void setCAN21()
 			hcan2.pTxMsg->Data[i*2+1] = (uint8_t)can2[i]->Intensity;
 		}
 	}
-
+	
 	if(can2_update == 1 && can2_type == 1)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -457,7 +459,7 @@ void setCAN22()
 			hcan2.pTxMsg->Data[i*2+1] = (uint8_t)can2[i+4]->Intensity;
 		}
 	}
-
+	
 	if(can2_update == 1 && can2_type == 2)
 	{
 		HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
@@ -532,25 +534,25 @@ void Motor_ID_Setting()
 		}
 	}
 }
-static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
-{
-	int16_t tmp = 0;
-  if (center_offset >= 4096)
-  {
-    if (raw_ecd > center_offset - 4096)
-      tmp = raw_ecd - center_offset;
-    else
-      tmp = raw_ecd + 8192 - center_offset;
-  }
-  else
-  {
-    if (raw_ecd > center_offset + 4096)
-      tmp = raw_ecd - 8192 - center_offset;
-    else
-      tmp = raw_ecd - center_offset;
-  }
-  return tmp;
-}
+//static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
+//{
+//	int16_t tmp = 0;
+//  if (center_offset >= 4096)
+//  {
+//    if (raw_ecd > center_offset - 4096)
+//      tmp = raw_ecd - center_offset;
+//    else
+//      tmp = raw_ecd + 8192 - center_offset;
+//  }
+//  else
+//  {
+//    if (raw_ecd > center_offset + 4096)
+//      tmp = raw_ecd - 8192 - center_offset;
+//    else
+//      tmp = raw_ecd - center_offset;
+//  }
+//  return tmp;
+//}
 
 
 void gimbal_set_yaw_gyro_angle(MotorINFO* id, float yaw)
