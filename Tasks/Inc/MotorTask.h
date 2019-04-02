@@ -59,35 +59,6 @@
 	&PID_Calc,&PID_Reset,\
 } 
 
-#define CHASSIS_MOTOR_SPEED_PID_DEFAULT \
-{\
-	0,0,{0,0},\
-	12.0f,0.17f,2.0f,\
-	0,0,0,\
-	15000,15000,15000,\
-	0,12000,0,0,0,\
-	&PID_Calc,&PID_Reset,\
-}
-
-#define FRIC_MOTOR_SPEED_PID_DEFAULT \
-{\
-	0,0,{0,0},\
-	8.5f,0.0f,7.3f,\
-	0,0,0,\
-	10000,10000,10000,\
-	0,7000,0,0,0,\
-	&PID_Calc,&PID_Reset,\
-}
-
-#define FW_PID_DEFAULT \
-{ \
-	0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,\
-	0, 0, 0, 0.0, 0.0, 0.0, \
-	0, 0, 0, 0.0, 0, \
-	{0.0}, \
-	&fw_PID_Calc, &fw_PID_Reset \
-}
-
 typedef enum
 {
 	ESC_C6x0=0,
@@ -130,61 +101,39 @@ typedef struct MotorINFO
 	double 				lastRead;
 	double 				RealAngle;
 	void (*Handle)(struct MotorINFO* id);
-	fw_PID_Regulator_t 	positionPID;
-	fw_PID_Regulator_t 	speedPID;
-	PID_Regulator_t		offical_speedPID;
+	pid_t 	positionPID;
+	pid_t 	speedPID;
 	int16_t				Intensity;
 	float					EncoderAngle;
 	float					EncoderLastAngle;
 	gimbal_sensor sensor; 
 }MotorINFO;
 
-typedef struct chassis *gimbal_t;
-struct gimbal
+typedef struct gimbal
 {
 	MotorINFO GMY;
 	MotorINFO GMP;
-};
+}gimbal;
 
-typedef struct chassis *chassis_t;
-struct chassis
+typedef struct chassis
 {
 	MotorINFO CMFL;
 	MotorINFO CMFR;
 	MotorINFO CMBR;
 	MotorINFO CMBL;
-};
+}chassis;
 
-typedef struct shoot *shoot_t;
-struct shoot
+typedef struct shoot
 {
-	MotoINFO FRICL;
-	MotoINFO FRICR;
-};
-
-#define Normal_MOTORINFO_Init(rdc,func,ppid,spid)\
-{\
-	ESC_C6x0,0,0,0,rdc,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	ppid,spid,CHASSIS_MOTOR_SPEED_PID_DEFAULT,0,0,0 \
-}
-
-#define Chassis_MOTORINFO_Init(func,spid)\
-{\
-	ESC_C6x0,0,0,0,1,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	FW_PID_DEFAULT,FW_PID_DEFAULT,spid,0,0,0 \
-}
-
-#define Gimbal_MOTORINFO_Init(rdc,func,ppid,spid)\
-{\
-	ESC_6623,0,0,0,rdc,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	ppid,spid,CHASSIS_MOTOR_SPEED_PID_DEFAULT,0,0,0 \
-}
+	MotorINFO FRICL;
+	MotorINFO FRICR;
+	MotorINFO STIR;
+}shoot;
 
 
-extern MotorINFO CMFL,CMFR,CMBL,CMBR,GMY,GMP,FRICL,FRICR,STIR,test;
+extern gimbal *gimbal_t;
+extern chassis *chassis_t;
+extern shoot *shoot_t;
 extern MotorINFO *can1[8],*can2[8];
 
 void InitMotor(MotorINFO *id);

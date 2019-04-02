@@ -1,0 +1,173 @@
+cmake_minimum_required(VERSION 3.13)
+project(RM_Infantry_1 C)
+
+set(CMAKE_C_STANDARD 11)
+
+include_directories(Drivers/CMSIS)
+include_directories(Drivers/CMSIS/Device)
+include_directories(Drivers/CMSIS/Device/ST)
+include_directories(Drivers/CMSIS/Device/ST/STM32F4xx)
+include_directories(Drivers/CMSIS/Device/ST/STM32F4xx/Include)
+include_directories(Drivers/CMSIS/Include)
+include_directories(Drivers/STM32F4xx_HAL_Driver/Inc)
+include_directories(Drivers/STM32F4xx_HAL_Driver/Inc/Legacy)
+include_directories(Inc)
+include_directories(MDK-ARM/bsp)
+include_directories(MDK-ARM/RTE)
+include_directories(MDK-ARM/RTE/_RM_frame)
+include_directories(Tasks/Inc)
+
+add_executable(RM_Infantry_1
+    Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h
+    Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
+    Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
+    Drivers/CMSIS/Include/arm_common_tables.h
+    Drivers/CMSIS/Include/arm_const_structs.h
+    Drivers/CMSIS/Include/arm_math.h
+    Drivers/CMSIS/Include/cmsis_armcc.h
+    Drivers/CMSIS/Include/cmsis_armcc_V6.h
+    Drivers/CMSIS/Include/cmsis_gcc.h
+    Drivers/CMSIS/Include/core_cm0.h
+    Drivers/CMSIS/Include/core_cm0plus.h
+    Drivers/CMSIS/Include/core_cm3.h
+    Drivers/CMSIS/Include/core_cm4.h
+    Drivers/CMSIS/Include/core_cm7.h
+    Drivers/CMSIS/Include/core_cmFunc.h
+    Drivers/CMSIS/Include/core_cmInstr.h
+    Drivers/CMSIS/Include/core_cmSimd.h
+    Drivers/CMSIS/Include/core_sc000.h
+    Drivers/CMSIS/Include/core_sc300.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
+    Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_iwdg.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
+    Inc/adc.h
+    Inc/can.h
+    Inc/dac.h
+    Inc/dma.h
+    Inc/gpio.h
+    Inc/includes.h
+    Inc/iwdg.h
+    Inc/main.h
+    Inc/spi.h
+    Inc/stm32f4xx_hal_conf.h
+    Inc/stm32f4xx_it.h
+    Inc/tim.h
+    Inc/usart.h
+    MDK-ARM/bsp/bsp_imu.c
+    MDK-ARM/bsp/bsp_imu.h
+    MDK-ARM/bsp/ist8310_reg.h
+    MDK-ARM/bsp/mpu6050_reg.h
+    MDK-ARM/bsp/mpu6500_reg.h
+    MDK-ARM/bsp/mpu9250_reg.h
+    MDK-ARM/bsp/myiic.c
+    MDK-ARM/bsp/myiic.h
+    MDK-ARM/bsp/mytype.h
+    MDK-ARM/RTE/_RM_frame/RTE_Components.h
+    Src/adc.c
+    Src/can.c
+    Src/dac.c
+    Src/dma.c
+    Src/gpio.c
+    Src/iwdg.c
+    Src/main.c
+    Src/spi.c
+    Src/stm32f4xx_hal_msp.c
+    Src/stm32f4xx_it.c
+    Src/system_stm32f4xx.c
+    Src/tim.c
+    Src/usart.c
+    Tasks/Inc/AutoAimTask.h
+    Tasks/Inc/AuxDevice.h
+    Tasks/Inc/bsp_imu.h
+    Tasks/Inc/CANTask.h
+    Tasks/Inc/Cap2ControlTask.h
+    Tasks/Inc/CapControlTask.h
+    Tasks/Inc/ControlTask.h
+    Tasks/Inc/detect.h
+    Tasks/Inc/drivers_ramp.h
+    Tasks/Inc/FunctionTask.h
+    Tasks/Inc/fuzzy_pid_regulator.h
+    Tasks/Inc/GyroReadTask.h
+    Tasks/Inc/ist8310_reg.h
+    Tasks/Inc/JudgeTask.h
+    Tasks/Inc/ManifoldTask.h
+    Tasks/Inc/MotorTask.h
+    Tasks/Inc/mpu6050_reg.h
+    Tasks/Inc/mpu6500_reg.h
+    Tasks/Inc/mpu9250_reg.h
+    Tasks/Inc/myiic.h
+    Tasks/Inc/mytype.h
+    Tasks/Inc/offical_Judge_Handler.h
+    Tasks/Inc/offline_check.h
+    Tasks/Inc/pid_regulator.h
+    Tasks/Inc/PowerLimitationTask.h
+    Tasks/Inc/RemoteTask.h
+    Tasks/Inc/ServoTask.h
+    Tasks/Inc/UpperTask.h
+    Tasks/Inc/visualscope.h
+    Tasks/Src/AutoAimTask.c
+    Tasks/Src/bsp_imu.c
+    Tasks/Src/CANTask.c
+    Tasks/Src/Cap2ControlTask.c
+    Tasks/Src/CapControlTask.c
+    Tasks/Src/ControlTask.c
+    Tasks/Src/detect.c
+    Tasks/Src/FunctionTask.c
+    Tasks/Src/fuzzy_pid_regulator.c
+    Tasks/Src/GyroReadTask.c
+    Tasks/Src/JudgeTask.c
+    Tasks/Src/ManifoldTask.c
+    Tasks/Src/MotorTask.c
+    Tasks/Src/myiic.c
+    Tasks/Src/offline_check.c
+    Tasks/Src/pid_regulator.c
+    Tasks/Src/pid_regulator_fuzzy.c
+    Tasks/Src/PowerLimitationTask.c
+    Tasks/Src/RemoteTask.c
+    Tasks/Src/ServoTask.c
+    Tasks/Src/UpperTask.c
+    Tasks/Src/visualscope.c)

@@ -1,4 +1,4 @@
-/**
+ /**
   ******************************************************************************
   * File Name          : FunctionTask.c
   * Description        : 用于记录机器人独有的功能
@@ -37,6 +37,7 @@ int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
 int16_t FrictionLSpeedHigh = -8000;
 int8_t aimcount=0, chassiscount=0, servocount=0;
+
 
 
 //初始化
@@ -97,9 +98,9 @@ void RemoteControlProcess(Remote *rc)
 
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;				
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -155,15 +156,15 @@ void RemoteControlProcess(Remote *rc)
 		  ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		  
 		}
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
-			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
+			gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
 		}else
 		{
-			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+			gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		}
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
@@ -194,9 +195,9 @@ void RemoteControlProcess(Remote *rc)
 	{
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -297,9 +298,9 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	MINMAX(mouse->x, -150, 150); 
 	MINMAX(mouse->y, -150, 150); 
 	
-	GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+	gimbal_t->GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
 	#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
+		gimbal_t->GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
 	#else
 		ChassisSpeedRef.rotate_ref = -mouse->x * RC_ROTATE_SPEED_REF;
 	#endif
@@ -649,12 +650,12 @@ void ChassisTwist(void)
 		{ChassisTwistGapAngle = CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		case CHASSIS_TWIST_ANGLE_LIMIT:
 		{
-			if(fabs((GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
+			if(fabs((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
 			{ChassisTwistGapAngle = -CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		}
 		case -CHASSIS_TWIST_ANGLE_LIMIT:
 		{
-			if(fabs((GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
+			if(fabs((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
 			{ChassisTwistGapAngle = CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		}
 	}

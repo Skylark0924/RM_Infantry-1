@@ -558,11 +558,6 @@
               <FilePath>..\Tasks\Src\GyroReadTask.c</FilePath>
             </File>
             <File>
-              <FileName>pid_regulator.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\pid_regulator.c</FilePath>
-            </File>
-            <File>
               <FileName>RMLib.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\Tasks\Src\RMLib.lib</FilePath>
@@ -578,24 +573,19 @@
               <FilePath>..\Tasks\Src\Cap2ControlTask.c</FilePath>
             </File>
             <File>
-              <FileName>fuzzy_pid_regulator.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\fuzzy_pid_regulator.c</FilePath>
-            </File>
-            <File>
               <FileName>ServoTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\ServoTask.c</FilePath>
             </File>
             <File>
-              <FileName>offline_check.c</FileName>
+              <FileName>pid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\offline_check.c</FilePath>
+              <FilePath>..\Tasks\Src\pid.c</FilePath>
             </File>
             <File>
-              <FileName>detect.c</FileName>
+              <FileName>fuzzy_pid_regulator.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Tasks\Src\detect.c</FilePath>
+              <FilePath>..\Tasks\Src\fuzzy_pid_regulator.c</FilePath>
             </File>
           </Files>
         </Group>

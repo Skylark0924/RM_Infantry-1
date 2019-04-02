@@ -47,7 +47,7 @@
 #include "AuxDevice.h"
 #include "RemoteTask.h"
 #include "FunctionTask.h"
-#include "pid_regulator.h"
+#include "pid.h"
 #include "fuzzy_pid_regulator.h"
 #include "CANTask.h"
 #include "MotorTask.h"
