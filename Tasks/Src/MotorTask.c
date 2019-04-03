@@ -17,6 +17,11 @@ void ControlCM(MotorINFO *id);
 void ControlGMY(MotorINFO *id);
 void ControlGMP(MotorINFO *id);
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
+MotorINFO *can1[8],*can2[8];
+gimbal *gimbal_t;
+chassis *chassis_t;
+shoot *shoot_t;
+
 
 uint8_t GMYReseted = 0;
 uint8_t GMPReseted = 0;
@@ -56,10 +61,14 @@ void gimbal_pid_register(struct gimbal *gimbal)
 	pid_struct_init(&gimbal->GMP.positionPID, 2000, 10, 2.0, 0.1, 0.3);
 	pid_struct_init(&gimbal->GMP.speedPID, 30000, 3000, 3000.0, 10.0, 0);	 
 	#endif
+
 }
 
-MotorINFO* can1[8]={&FRICL,&FRICR,0,0,&gimbal_t->GMY,&gimbal_t->GMP,&STIR,0};
-MotorINFO* can2[8]={&chassis_t->CMFL,&chassis_t->CMFR,&chassis_t->CMBL,&chassis_t->CMBR,0,0,0,0};
+void Init_Motor_Id(gimbal *gimbal, chassis *chassis, shoot *shoot)
+{
+	MotorINFO* can1[8]={&shoot->FRICL,&shoot->FRICR,0,0,&gimbal->GMY,&gimbal->GMP,&shoot->STIR,0};
+	MotorINFO* can2[8]={&chassis->CMFL,&chassis->CMFR,&chassis->CMBL,&chassis->CMBR,0,0,0,0};
+}
 
 void ControlNM(MotorINFO* id)
 {

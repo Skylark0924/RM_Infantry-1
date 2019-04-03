@@ -101,7 +101,7 @@ extern uint8_t rx_free;
 
 void RemoteDataProcess(uint8_t *pData);
 void InitRemoteControl(void);
-void RemoteControlProcess(Remote *rc);
-void MouseKeyControlProcess(Mouse *mouse, Key *key);
+void RemoteControlProcess(Remote *rc, gimbal *gimbal_t, shoot *shoot_t);
+void MouseKeyControlProcess(Mouse *mouse, Key *key, gimbal *gimbal_t, shoot *shoot_t);
 
 #endif /*__ REMOTETASK_H */

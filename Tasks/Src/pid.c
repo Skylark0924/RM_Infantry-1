@@ -15,7 +15,7 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include "includes.h"
+#include "pid.h"
 
 void abs_limit(float *a, float ABS_MAX)
 {
@@ -105,7 +105,7 @@ void pid_struct_init(
   pid->f_pid_reset(pid, kp, ki, kd);
 }
 
-int16_t PID_PROCESS_Double(struct pid pid_position, struct pid pid_speed, 
+int PID_PROCESS_Double(struct pid pid_position, struct pid pid_speed, 
 									float target, float position_feedback, float speed_feedback)
 {
 	//position		

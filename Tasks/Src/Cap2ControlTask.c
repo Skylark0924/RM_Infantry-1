@@ -503,7 +503,7 @@ static void Cap_Ctr_TEMP_RECHARGE() {
 	
 	#ifdef USE_CAPex
 	  if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.TargetAngle) > 5000 || fabs(chassis_t->CMFR.TargetAngle) > 5000 || \
-					  fabs(chassis_t->chassis_t->CMBL.TargetAngle) > 5000 || fabs(chassis_t->CMBR.TargetAngle) > 5000 || PowerHeatData.chassisPowerBuffer < 30.0f){
+					  fabs(chassis_t->CMBL.TargetAngle) > 5000 || fabs(chassis_t->CMBR.TargetAngle) > 5000 || PowerHeatData.chassisPowerBuffer < 30.0f){
 			      HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_RESET);
 		  	}else{
 				    HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_SET);

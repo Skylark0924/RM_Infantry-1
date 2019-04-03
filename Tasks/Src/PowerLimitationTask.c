@@ -16,7 +16,7 @@
 float SpeedAttenuation = 1.0f;
 float LimitFactor = 1.0f;
 uint8_t flag = 1;
-pid_t PowerLimitationPID = {0};
+pid PowerLimitationPID = {0};
 
 //底盘功率限制
 void PowerLimitation(void)
@@ -25,7 +25,7 @@ void PowerLimitation(void)
 	int32_t CM_current_max;
 	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
 	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
-	int32_t CMBLIntensity = chassis_t->chassis_t->CMBL.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
 	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
@@ -79,7 +79,7 @@ void PowerLimitation(void)
 	}
 	chassis_t->CMFL.Intensity = CMFLIntensity;
 	chassis_t->CMFR.Intensity = CMFRIntensity;
-	chassis_t->chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
 	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }
@@ -91,7 +91,7 @@ void CurBased_PowerLimitation(void)
 	int32_t CM_current_max;
 	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
 	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
-	int32_t CMBLIntensity = chassis_t->chassis_t->CMBL.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
 	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
@@ -131,7 +131,7 @@ void CurBased_PowerLimitation(void)
 	}
 	chassis_t->CMFL.Intensity = CMFLIntensity;
 	chassis_t->CMFR.Intensity = CMFRIntensity;
-	chassis_t->chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
 	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }
@@ -143,7 +143,7 @@ void CapBased_PowerLimitation(void)
 	int32_t CM_current_max;
 	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
 	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
-	int32_t CMBLIntensity = chassis_t->chassis_t->CMBL.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
 	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
@@ -181,7 +181,7 @@ void CapBased_PowerLimitation(void)
 	}
 	chassis_t->CMFL.Intensity = CMFLIntensity;
 	chassis_t->CMFR.Intensity = CMFRIntensity;
-	chassis_t->chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
 	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }

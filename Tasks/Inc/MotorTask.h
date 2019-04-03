@@ -101,13 +101,14 @@ typedef struct MotorINFO
 	double 				lastRead;
 	double 				RealAngle;
 	void (*Handle)(struct MotorINFO* id);
-	pid_t 	positionPID;
-	pid_t 	speedPID;
+	pid 	positionPID;
+	pid 	speedPID;
 	int16_t				Intensity;
 	float					EncoderAngle;
 	float					EncoderLastAngle;
 	gimbal_sensor sensor; 
 }MotorINFO;
+
 
 typedef struct gimbal
 {
@@ -136,6 +137,7 @@ extern chassis *chassis_t;
 extern shoot *shoot_t;
 extern MotorINFO *can1[8],*can2[8];
 
+void Init_Motor_Id(gimbal *gimbal, chassis *chassis, shoot *shoot);
 void InitMotor(MotorINFO *id);
 void Motor_ID_Setting(void);
 

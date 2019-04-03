@@ -15,7 +15,7 @@
 #include <math.h>
 #include "mpu6500_reg.h"
 #include "spi.h"
-#include "pid_regulator.h"
+#include "pid.h"
 
 #define BOARD_DOWN (1)   
 //#define IST8310
@@ -696,19 +696,19 @@ void imu_attitude_update(void)
 
 /* imu temperature control */
 #define DEFAULT_IMU_TEMP   50
-pid_t pid_imu_tmp       = {0};
+pid pid_imu_tmp       = {0};
 
 void imu_temp_ctrl_init(void)
 {
-	  PID_struct_init(&pid_imu_tmp, POSITION_PID, 2000, 500,
+	  pid_struct_init(&pid_imu_tmp, 2000, 500,
                   1100, 10, 0);
 }
 
 void imu_temp_keep(void)
 {
   imu.temp_ref = DEFAULT_IMU_TEMP;
-  pid_calc(&pid_imu_tmp, imu.temp, imu.temp_ref);
-  mpu_heat_ctrl(pid_imu_tmp.out);
+	pid_calculate(&pid_imu_tmp, imu.temp, imu.temp_ref);
+  mpu_heat_ctrl(pid_imu_tmp.output);
 }
 
 void mpu_heat_ctrl(uint16_t pwm_pulse)

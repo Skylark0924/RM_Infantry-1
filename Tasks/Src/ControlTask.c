@@ -39,7 +39,7 @@ MusicNote SuperMario[] = {
 	{H1, 250}, {0, 50}
 };
 
-pid_t CMRotatePID = {0}; 
+pid CMRotatePID = {0}; 
 extern int32_t auto_counter;
 
 void playMusicSuperMario(void){
@@ -125,7 +125,7 @@ void ControlRotate(void)
 	rotate_speed = CMRotatePID.output * 13 + ChassisSpeedRef.forward_back_ref * 0.01 + ChassisSpeedRef.left_right_ref * 0.01;
 }
 
-void Chassis_Data_Decoding()
+void Chassis_Data_Decoding(chassis *chassis_t)
 {
 	ControlRotate();
 	chassis_t->CMFL.TargetAngle = (  ChassisSpeedRef.forward_back_ref	*0.075 *(cos((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 6.28 / 8192.0f)-sin((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 6.28 / 8192.0f))
@@ -150,7 +150,7 @@ void controlLoop()
 	
 	if(WorkState > 0)
 	{
-		Chassis_Data_Decoding();
+		Chassis_Data_Decoding(chassis_t);
 		
 		for(int i=0;i<8;i++) if(can1[i]!=0) (can1[i]->Handle)(can1[i]);
 		for(int i=0;i<8;i++) if(can2[i]!=0) (can2[i]->Handle)(can2[i]);

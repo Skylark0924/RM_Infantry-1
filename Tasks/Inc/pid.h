@@ -24,8 +24,6 @@
 #define PID_H_EXTERN extern
 #endif
 
-#include "includes.h"
-
 
 typedef struct pid_param
 {
@@ -60,7 +58,7 @@ typedef struct pid
                        float i,
                        float d);
   void (*f_pid_reset)(struct pid *pid, float p, float i, float d);
-}pid_t;
+}pid;
 
 void pid_struct_init(
     struct pid *pid,
@@ -72,7 +70,7 @@ void pid_struct_init(
     float kd);
 
 float pid_calculate(struct pid *pid, float fdb, float ref);
-int16_t PID_PROCESS_Double(struct pid pid_position, struct pid pid_speed, 
+int PID_PROCESS_Double(struct pid pid_position, struct pid pid_speed, 
 							float target, float position_feedback, float speed_feedback);
 
 #endif // __PID_H__

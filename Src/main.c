@@ -156,6 +156,7 @@ int main(void)
 	for(int i=0;i<8;i++) {InitMotor(can1[i]);InitMotor(can2[i]);}
 	InitPWM();
 	InitCanReception();
+	Init_Motor_Id(gimbal_t, chassis_t, shoot_t);
 	//InitGyroUart();
 	InitJudgeUart();
 	/*µ¯²Õ¶æ»ú³õÊ¼»¯*/

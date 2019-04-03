@@ -113,7 +113,7 @@ void FunctionTaskInit(void);
 void Limit_Position(void);
 void OptionalFunction(void);
 void FreshSuperCState(void);
-void ChassisTwist(void);
+void ChassisTwist(gimbal *gimbal_t);
 void ChassisDeTwist(void);
 void LJHTwist(void);
 

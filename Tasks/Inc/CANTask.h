@@ -20,7 +20,7 @@ typedef __packed struct{
 	int16_t moment;
 }ESCC6x0RxMsg_t;
 
-typedef struct{
+typedef __packed struct{
 	int16_t angle;
 	int16_t realIntensity;
 	int16_t giveIntensity;
