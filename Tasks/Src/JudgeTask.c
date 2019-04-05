@@ -296,7 +296,7 @@ void Send_User_Data()
 	user_data.data1 += 0.1f;
 	user_data.data2 += 0.2f;
 	user_data.data3 += 0.3f;
-	user_data.mask = 0xE0;//二进制最左位对应灯条最右灯
+	//user_data.mask = 0xE0;//二进制最左位对应灯条最右灯
 	
 	unsigned char * bs1 = (unsigned char*)&user_data.data1;
 	unsigned char * bs2 = (unsigned char*)&user_data.data2;

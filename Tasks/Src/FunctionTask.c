@@ -190,6 +190,9 @@ void RemoteControlProcess(Remote *rc)
 	}
 	if(WorkState == ADDITIONAL_STATE_TWO)
 	{
+		if(LastState != WorkState){
+      Cap_State_Switch(CAP_STATE_STOP);
+    }
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
@@ -344,11 +347,10 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 		default: break;
 	}
 	
-	if (Cap_Get_Cap_State() != CAP_STATE_STOP )
+  if (Cap_Get_Cap_State() == CAP_STATE_STOP || Cap_Get_Cap_State() == CAP_STATE_RECHARGE)
 	{
-	    Cap_State_Switch(CAP_STATE_STOP);
+		Cap_State_Switch(CAP_STATE_RELEASE);
 	}
-
 	KeyboardModeFSM(key);
 	
 	switch (KeyboardMode)
@@ -471,11 +473,7 @@ void KeyboardModeFSM(Key *key)
 	}
 	else if(key->v & KEY_SHIFT)//Shift
 	{
-		if (Cap_Get_Cap_State() != CAP_STATE_RELEASE )
-	  {
-			Cap_State_Switch(CAP_STATE_RELEASE);
-		}
-		if(Cap_Get_Cap_Voltage()>12)
+		if(Cap_Get_Cap_Voltage()>9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE)
 		{
 			KM_FORWORD_BACK_SPEED=  HIGH_FORWARD_BACK_SPEED;
 			KM_LEFT_RIGHT_SPEED = HIGH_LEFT_RIGHT_SPEED;
