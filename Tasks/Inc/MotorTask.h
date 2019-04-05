@@ -22,8 +22,8 @@
 
 #ifdef GM_TEST
 #define GM_PITCH_GRAVITY_COMPENSATION 0
-#define GM_PITCH_ZERO 	6910
-#define GM_YAW_ZERO 	115
+#define GM_PITCH_ZERO 	8183
+#define GM_YAW_ZERO 	8059
 #endif
 
 /************************** gimbal parameter *****************************/

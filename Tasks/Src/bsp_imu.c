@@ -17,17 +17,17 @@
 #include "spi.h"
 #include "pid_regulator.h"
 
-#define BOARD_DOWN (1)   
+//#define BOARD_DOWN (1)   
 //#define IST8310
 #define MPU_HSPI hspi5
 #define MPU_NSS_LOW HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET)
 #define MPU_NSS_HIGH HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET)
 
-#define Kp 0.2f                                              /* 
+#define Kp 2.0f                                              /* 
                                                               * proportional gain governs rate of 
                                                               * convergence to accelerometer/magnetometer 
 																															*/
-#define Ki 0.06f                                             /* 
+#define Ki 0.01f                                             /* 
                                                               * integral gain governs rate of 
                                                               * convergence of gyroscope biases 
 																															*/
@@ -295,9 +295,9 @@ void mpu_get_data()
 {
     mpu_read_bytes(MPU6500_ACCEL_XOUT_H, mpu_buff, 14);
 
-    mpu_data.ax   = mpu_buff[0] << 8 | mpu_buff[1] - mpu_data.ax_offset;
-    mpu_data.ay   = mpu_buff[2] << 8 | mpu_buff[3] - mpu_data.ay_offset;
-    mpu_data.az   = mpu_buff[4] << 8 | mpu_buff[5] - mpu_data.az_offset;
+    mpu_data.ax   = mpu_buff[0] << 8 | mpu_buff[1];
+    mpu_data.ay   = mpu_buff[2] << 8 | mpu_buff[3];
+    mpu_data.az   = mpu_buff[4] << 8 | mpu_buff[5];
     mpu_data.temp = mpu_buff[6] << 8 | mpu_buff[7];
 
     mpu_data.gx = ((mpu_buff[8]  << 8 | mpu_buff[9])  - mpu_data.gx_offset);
@@ -310,11 +310,7 @@ void mpu_get_data()
     memcpy(&imu.ax, &mpu_data.ax, 6 * sizeof(int16_t));
 	
     imu.temp = 21 + mpu_data.temp / 333.87f;
-
-	  imu.ax = mpu_data.ax / (4096.0f / 9.80665f); //8g -> m/s^2
-		imu.ay = mpu_data.ay / (4096.0f / 9.80665f); //8g -> m/s^2
-		imu.az = mpu_data.az / (4096.0f / 9.80665f); //8g -> m/s^2
-			  /* 2000dps -> rad/s */
+	  /* 2000dps -> rad/s */
 	  imu.wx   = mpu_data.gx / 16.384f / 57.3f; 
     imu.wy   = mpu_data.gy / 16.384f / 57.3f; 
     imu.wz   = mpu_data.gz / 16.384f / 57.3f;
@@ -354,7 +350,6 @@ uint8_t id;
 	*/
 uint8_t mpu_device_init(void)
 {
-	imu.FirstEnter = 1;
 	MPU_DELAY(100);
 
 	id                               = mpu_read_byte(MPU6500_WHO_AM_I);
@@ -362,8 +357,8 @@ uint8_t mpu_device_init(void)
 	uint8_t MPU6500_Init_Data[10][2] = {{ MPU6500_PWR_MGMT_1, 0x80 },     /* Reset Device */ 
 																			{ MPU6500_PWR_MGMT_1, 0x03 },     /* Clock Source - Gyro-Z */ 
 																			{ MPU6500_PWR_MGMT_2, 0x00 },     /* Enable Acc & Gyro */ 
-																			{ MPU6500_CONFIG, 0x04 },         /* LPF Bandwidth 3600Hz 原 0x04,LPF 41Hz */ 
-																			{ MPU6500_GYRO_CONFIG, 0x00 },    /* +-250dps 原0x18 +-2000dps*/  
+																			{ MPU6500_CONFIG, 0x04 },         /* LPF 41Hz */ 
+																			{ MPU6500_GYRO_CONFIG, 0x18 },    /* +-2000dps */ 
 																			{ MPU6500_ACCEL_CONFIG, 0x10 },   /* +-8G */ 
 																			{ MPU6500_ACCEL_CONFIG_2, 0x02 }, /* enable LowPassFilter  Set Acc LPF */ 
 																			{ MPU6500_USER_CTRL, 0x20 },};    /* Enable AUX */ 
@@ -378,6 +373,8 @@ uint8_t mpu_device_init(void)
 
 	ist8310_init();
 	mpu_offset_call();
+	
+	imu.FirstEnter = 1;
 	return 0;
 }
 
@@ -396,13 +393,13 @@ void mpu_offset_call(void)
 
 		mpu_data.ax_offset += mpu_buff[0] << 8 | mpu_buff[1];
 		mpu_data.ay_offset += mpu_buff[2] << 8 | mpu_buff[3];
-		mpu_data.az_offset += mpu_buff[4] << 8 | mpu_buff[5]-4096;
+		mpu_data.az_offset += mpu_buff[4] << 8 | mpu_buff[5];
 	
 		mpu_data.gx_offset += mpu_buff[8]  << 8 | mpu_buff[9];
 		mpu_data.gy_offset += mpu_buff[10] << 8 | mpu_buff[11];
 		mpu_data.gz_offset += mpu_buff[12] << 8 | mpu_buff[13];
 
-		MPU_DELAY(2);
+		MPU_DELAY(5);
 	}
 	mpu_data.ax_offset=mpu_data.ax_offset / 300;
 	mpu_data.ay_offset=mpu_data.ay_offset / 300;

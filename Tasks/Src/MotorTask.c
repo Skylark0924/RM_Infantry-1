@@ -49,9 +49,10 @@ MotorINFO GMY  = Gimbal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(3000,20,30, 5000.0, 15000.0, 15000.0, 6000.0));
 #elif defined GM_TEST 
 MotorINFO GMP  = Normal_MOTORINFO_Init(1.0,&ControlGMP,
-									   fw_PID_INIT(2.0,0.1,0.3, 3.0, 10.0, 10.0, 10.0),
+//									   fw_PID_INIT(2.0,0.1,0.3, 3.0, 10.0, 10.0, 10.0),
+											fw_PID_INIT(0.15,0.1,0.0, 10.0, 10.0, 10.0, 10.0),
 //									   fw_PID_INIT(5000.0,80.0,300.0, 50000.0, 50000.0, 50000.0, 30000.0));
-											fw_PID_INIT(3000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
+											fw_PID_INIT(4000.0,10.0,0, 50000.0, 50000.0, 50000.0, 30000.0));
 MotorINFO GMY  = Normal_MOTORINFO_Init(1.0,&ControlGMY,
 									   fw_PID_INIT(1.0,0.1,0.2,0.0, 10.0, 10.0, 10.0),
 									   fw_PID_INIT(5000.0,10.0,20.0, 50000.0, 50000.0, 50000.0, 30000.0));			
@@ -73,7 +74,8 @@ MotorINFO STIR = Normal_MOTORINFO_Init(36.0,&ControlSTIR,
 
 MotorINFO* can1[8]={&FRICL,&FRICR,0,0,&GMY,&GMP,&STIR,0};
 MotorINFO* can2[8]={&CMFL,&CMFR,&CMBL,&CMBR,0,0,0,0};
-
+//MotorINFO* can1[8]={0,0,0,0,0,0,0,0};
+//MotorINFO* can2[8]={0,0,0,0,0,0,0,0};
 void ControlNM(MotorINFO* id)
 {
 	if(id==0) return;
@@ -169,6 +171,7 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
+	#ifdef USE_CHASSIS_IMU
 	gimbal_yaw_gyro_update(id, gyroZAngle+id->EncoderAngle);
 	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
 		
@@ -180,45 +183,16 @@ void ControlGMY(MotorINFO* id)
 	yaw=id->TargetAngle;
 	center_offset = ThisAngle - id->EncoderAngle;
 	
-	
 	//Initialize as encoder
 	if(id->FirstEnter==1) {
 		//id->lastRead = ThisAngle;
-//		id->lastRead = id->EncoderAngle;
-		//if(GMYReseted) id->FirstEnter = 0;
+		id->lastRead = id->EncoderAngle;
 		id->RealAngle = id->EncoderAngle;
 		id->FirstEnter = 0;
 		return;
 	}
 	
-	
 	id->RealAngle = ThisAngle;
-
-//	if(ThisAngle <= id->lastRead)
-//	{
-//		if((id->lastRead-ThisAngle) > 180)
-//			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
-//		else
-//			 id->RealAngle -= (id->lastRead - ThisAngle);
-//	}
-//	else
-//	{
-//		if((ThisAngle-id->lastRead) > 180)
-//			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
-//		else
-//			 id->RealAngle += (ThisAngle - id->lastRead);
-//	}
-//	id->lastRead = ThisAngle;
-
-
-
-//	//缘始郫时写謺覡毛欠卮位
-//	if(id->FirstEnter==1) {
-//		id->RealAngle = 0;
-//		//if(GMYReseted) id->FirstEnter = 0;
-//	  id->FirstEnter = 0;
-//		return;
-//	}
 	
 	//A bug is hiding here. Because yaw angle is accumulated, after running for a while, TargetAngle may be more than 360. If now change it to encoder angle, boom! 
 	#ifdef SHOOT_TEST
@@ -226,9 +200,52 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	
 	//Angle Limitation, from -45 to 45 degree
+//	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
 	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
+	#else
+	
+	float 	ThisAngle = -imu.yaw;
+	float 	Speed = imu.wz;		
+
+			
+	//Initialize as encoder
+	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
+		id->lastRead = id->EncoderAngle;
+		//if(GMYReseted) id->FirstEnter = 0;
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
+	}
+	
+	//Deal with that imu angle changes from 0 to 360 and accumulative angle 
+	if(ThisAngle <= id->lastRead)
+	{
+		if((id->lastRead-ThisAngle) > 180)
+			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
+		else
+			 id->RealAngle -= (id->lastRead - ThisAngle);
+	}
+	else
+	{
+		if((ThisAngle-id->lastRead) > 180)
+			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
+		else
+			 id->RealAngle += (ThisAngle - id->lastRead);
+	}
+	id->lastRead = ThisAngle;
+	
+	//A bug is hiding here. Because yaw angle is accumulated, after running for a while, TargetAngle may be more than 360. If now change it to encoder angle, boom! 
+	#ifdef SHOOT_TEST
+	id->RealAngle = id->EncoderAngle;;
+	#endif
+	
+	//Angle Limitation, from -45 to 45 degree
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
+	
+	#endif
 	//For initializing slowly
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
 	if(GMYReseted==0) id->positionPID.outputMax = 0.5;
@@ -250,25 +267,27 @@ void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
 	#ifdef INFANTRY3
-		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
+		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
 	#elif defined GM_TEST
-		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
+		id->EncoderAngle = (id->RxMsgC6x0.angle - GM_PITCH_ZERO)/8192.0*360.0;
 	#endif
-	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
+	NORMALIZE_ANGLE180(id->EncoderAngle);//Deal with that encoder changes from 0 to 8191 
 	
 	#ifdef INFANTRY3
 		id->RealAngle = -imu.pit;
 		float Speed = imu.wy;
 	#elif defined GM_TEST
-		id->RealAngle = id->EncoderAngle;
-		float Speed = -imu.wx;
+		id->RealAngle = -imu.pit;
+		float Speed = imu.wy;
+//		id->RealAngle = -imu.rol;
+//		float Speed = -imu.wx;
 	#endif
 	
 	#ifdef SHOOT_TEST
 		id->RealAngle = id->EncoderAngle;
 	#endif
 	
-	//限位，俯角8度，仰角30度
+	//Limit Angle, -8 to 30
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
 	///For initializing slowly
@@ -276,8 +295,8 @@ void ControlGMP(MotorINFO* id)
 	if(GMPReseted==0) id->positionPID.outputMax = 1.6;
 	else id->positionPID.outputMax = 10.0;
 	
-	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
-	
+	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+
 	//id->Intensity=0;
 }
 

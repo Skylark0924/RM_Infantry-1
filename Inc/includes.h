@@ -15,6 +15,8 @@
 #define GM_TEST
 //#define INFANTRY3
 
+//#define USE_CHASSIS_IMU
+
 //#define DEBUG_MODE
 #define USE_AUTOAIM
 #define USE_IMU
