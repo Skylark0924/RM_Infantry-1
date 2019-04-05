@@ -35,7 +35,7 @@ uint16_t allowBullet0 = 0;
 uint8_t ChassisTwistState = 0;
 int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
-int16_t FrictionLSpeedHigh = -8000;
+int16_t FrictionLSpeedHigh = -7500;
 int8_t aimcount=0, chassiscount=0, servocount=0;
 
 
@@ -163,7 +163,7 @@ void RemoteControlProcess(Remote *rc)
 		{
 			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		}
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+//		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
@@ -183,8 +183,6 @@ void RemoteControlProcess(Remote *rc)
 		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		}
 
-		
-		
 		#ifdef USE_AUTOAIM
 		aim_mode=1;
 		AutoAimGMCTRL();
@@ -297,7 +295,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	MINMAX(mouse->x, -150, 150); 
 	MINMAX(mouse->y, -150, 150); 
 	
-	GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+	GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
 	#ifdef USE_CHASSIS_FOLLOW
 		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
 	#else
@@ -410,7 +408,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				FRICR.TargetAngle = -FrictionLSpeedHigh;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
-			else if(key->v & KEY_F)
+			else if(key->v & KEY_F)	//press Q to open Chassis Twist, press agine to close
 			{
 				aimcount++;
 				if (aimcount%2==0)
@@ -418,7 +416,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				else
 					aim_mode=1;
 			}
-			else if (key->v & KEY_Q)
+			else if (key->v & KEY_Q)	//press Q to open Chassis Twist, press agine to close
 			{
 				chassiscount++;
 				if (chassiscount%2==0)
@@ -430,7 +428,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			else if(key->v & KEY_G)
 			{
 					/*按住G控制舵机，开启舱盖*/
-					int id = 0, pwm = 1800, time = 0;
+					int id = 0, pwm = 1200, time = 0;
 					char ServoMes[15];
 					sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
 					HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	

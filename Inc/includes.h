@@ -21,7 +21,7 @@
 #define USE_AUTOAIM
 #define USE_IMU
 #define USE_CHASSIS_FOLLOW
-//#define USE_HEAT_LIMIT_INFANTRY
+#define USE_HEAT_LIMIT_INFANTRY
 //#define FRIC_PWM_MODE//临时使用，后续不需要
 //#define SHOOT_TEST
 #ifdef SHOOT_TEST

@@ -115,8 +115,7 @@ void ControlRotate(void)
 		#ifdef INFANTRY3
 			ChassisSpeedRef.rotate_ref = (GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
 		#else
-//			ChassisSpeedRef.rotate_ref = (GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle;
-	      ChassisSpeedRef.rotate_ref = GMY.EncoderAngle;
+	      ChassisSpeedRef.rotate_ref = GMY.EncoderAngle - ChassisTwistGapAngle;
 		#endif
 		NORMALIZE_ANGLE180(ChassisSpeedRef.rotate_ref);
 	#endif
@@ -152,7 +151,7 @@ void controlLoop()
 	
 	if(WorkState > 0)
 	{
-		Chassis_Data_Decoding();
+		Chassis_Data_Decoding();  
 		
 		for(int i=0;i<8;i++) if(can1[i]!=0) (can1[i]->Handle)(can1[i]);
 		for(int i=0;i<8;i++) if(can2[i]!=0) (can2[i]->Handle)(can2[i]);
