@@ -587,6 +587,11 @@
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\fuzzy_pid_regulator.c</FilePath>
             </File>
+            <File>
+              <FileName>init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\init.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

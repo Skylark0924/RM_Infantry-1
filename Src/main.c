@@ -157,6 +157,7 @@ int main(void)
 	InitPWM();
 	InitCanReception();
 	Init_Motor_Id(gimbal_t, chassis_t, shoot_t);
+	Init_Motor_Task(gimbal_t, chassis_t, shoot_t);
 	//InitGyroUart();
 	InitJudgeUart();
 	/*µ¯²Õ¶æ»ú³õÊ¼»¯*/

@@ -11,12 +11,12 @@
   */
 #include "includes.h"
 
-void ControlNM(MotorINFO *id);
-void ControlSTIR(MotorINFO *id);
-void ControlCM(MotorINFO *id);
-void ControlGMY(MotorINFO *id);
-void ControlGMP(MotorINFO *id);
-static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
+//void ControlNM(MotorINFO *id);
+//void ControlSTIR(MotorINFO *id);
+//void ControlCM(MotorINFO *id);
+//void ControlGMY(MotorINFO *id);
+//void ControlGMP(MotorINFO *id);
+//static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 MotorINFO *can1[8],*can2[8];
 gimbal *gimbal_t;
 chassis *chassis_t;
@@ -68,6 +68,9 @@ void Init_Motor_Id(gimbal *gimbal, chassis *chassis, shoot *shoot)
 {
 	MotorINFO* can1[8]={&shoot->FRICL,&shoot->FRICR,0,0,&gimbal->GMY,&gimbal->GMP,&shoot->STIR,0};
 	MotorINFO* can2[8]={&chassis->CMFL,&chassis->CMFR,&chassis->CMBL,&chassis->CMBR,0,0,0,0};
+	chassis_pid_register(chassis_t);
+	shoot_pid_register(shoot_t);
+	gimbal_pid_register(gimbal_t);
 }
 
 void ControlNM(MotorINFO* id)

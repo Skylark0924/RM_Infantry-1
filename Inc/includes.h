@@ -50,6 +50,7 @@
 #include "fuzzy_pid_regulator.h"
 #include "CANTask.h"
 #include "MotorTask.h"
+#include "init.h"
 #include "RemoteTask.h"
 #include "FunctionTask.h"
 #include "ControlTask.h"
