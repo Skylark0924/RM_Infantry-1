@@ -277,7 +277,7 @@ void ControlGMP(MotorINFO* id)
 	if(GMPReseted==0) id->positionPID.param.max_out = 1.6;
 	else id->positionPID.param.max_out = 10.0;
 	
-	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(id->positionPID,id->speedPID,id->TargetAngle,id->RealAngle,Speed);
 
 	//id->Intensity=0;
 }

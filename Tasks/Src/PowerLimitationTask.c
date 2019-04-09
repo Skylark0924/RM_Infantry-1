@@ -252,10 +252,10 @@ void CapBased_PowerLimitation(void)
 
 //void getRealSpeed(void)
 //{
-//	float RealSpeed_CM1 = chassis_t->CMFL.offical_speedPID.fdb;
-//	float RealSpeed_CM2 = CMFR.offical_speedPID.fdb;
-//	float RealSpeed_CM3 = chassis_t->CMBL.offical_speedPID.fdb;
-//	float RealSpeed_CM4 = chassis_t->CMBR.offical_speedPID.fdb;
+//	float RealSpeed_CM1 = chassis_t->CMFL.RealAngle;
+//	float RealSpeed_CM2 = CMFR.RealAngle;
+//	float RealSpeed_CM3 = chassis_t->CMBL.RealAngle;
+//	float RealSpeed_CM4 = chassis_t->CMBR.RealAngle;
 //	RealChassisSpeed.forward_back_ref = (RealSpeed_CM1 - RealSpeed_CM2 + RealSpeed_CM3 - RealSpeed_CM4) / 4.0f / 12.0f;
 //	RealChassisSpeed.left_right_ref = (RealSpeed_CM1 - RealSpeed_CM3 + RealSpeed_CM2 - RealSpeed_CM4) / 4.0f / 12.0f;
 //	RealChassisSpeed.rotate_ref = (RealSpeed_CM1 + RealSpeed_CM3 + RealSpeed_CM2 + RealSpeed_CM4) / 4.0f / 12.0f;
