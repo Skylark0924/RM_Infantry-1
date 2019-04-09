@@ -139,10 +139,14 @@ int main(void)
 	//各模块初始化
 	
 	/* 开启四路24V电源 */
-	HAL_GPIO_WritePin(GPIOH,1<<2,1);
-	HAL_GPIO_WritePin(GPIOH,1<<3,1);
-	HAL_GPIO_WritePin(GPIOH,1<<4,1);
-	HAL_GPIO_WritePin(GPIOH,1<<5,1);
+//	HAL_GPIO_WritePin(GPIOH,1<<2,1);
+//	HAL_GPIO_WritePin(GPIOH,1<<3,1);
+//	HAL_GPIO_WritePin(GPIOH,1<<4,1);
+//	HAL_GPIO_WritePin(GPIOH,1<<5,1);
+	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_2,GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOH,GPIO_PIN_3,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_4,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_5,GPIO_PIN_SET);
 	/*******************/
 	
 	#ifdef FRIC_PWM_MODE//临时使用，后续不需要
