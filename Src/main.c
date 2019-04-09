@@ -136,20 +136,17 @@ int main(void)
   MX_DAC_Init();
 
   /* USER CODE BEGIN 2 */
-	//��ģ���ʼ��
+	//各模块初始化
 	
-	/* ������·24V��Դ */
-//	HAL_GPIO_WritePin(GPIOH,1<<2,1);
-//	HAL_GPIO_WritePin(GPIOH,1<<3,1);
-//	HAL_GPIO_WritePin(GPIOH,1<<4,1);
-//	HAL_GPIO_WritePin(GPIOH,1<<5,1);
+	/* 开启四路24V电源 */
+
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_2,GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOH,GPIO_PIN_3,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_3,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_4,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_5,GPIO_PIN_SET);
 	/*******************/
 	
-	#ifdef FRIC_PWM_MODE//��ʱʹ�ã���������Ҫ
+	#ifdef FRIC_PWM_MODE//临时使用，后续不需要
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
 	
 	__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,800);
@@ -163,16 +160,16 @@ int main(void)
 	//InitGyroUart();
 	Init_Motor_Task();
 	InitJudgeUart();
-	/*���ն����ʼ��*/
+	/*弹舱舵机初始化*/
 	InitServoUart();
-	/*���ն����ʼ������*/
-	/*****�����ǳ�ʼ��*****/
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);//���ں��µ���
+	/*弹舱舵机初始化结束*/
+	/*****陀螺仪初始化*****/
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);//用于恒温电阻
 	mpu_device_init();
 	init_quaternion();
 	imu_temp_ctrl_init();
-	/*****�����ǳ�ʼ������*****/
-	MX_IWDG_Init();							//Cube������ǵ�ע�͵������Զ����ɵĿ��Ź���ʼ������
+	/*****陀螺仪初始化结束*****/
+	MX_IWDG_Init();							//Cube配置完记得注释掉上面自动生成的看门狗初始化函数
 
 	#ifdef	USE_AUTOAIM
 		InitAutoAim();
@@ -180,7 +177,7 @@ int main(void)
 	
 	#ifdef DEBUG_MODE
 	ctrlUartInit();
-	//ʱ���ж�
+	//时间中断
 	HAL_TIM_Base_Start_IT(&htim10);
 	#endif
 	HAL_TIM_Base_Start_IT(&htim6);
@@ -191,7 +188,7 @@ int main(void)
 	//ADC
 	//HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_Value,160);
 	
-	//ʱ���ж�
+	//时间中断
 	HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
 	HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);

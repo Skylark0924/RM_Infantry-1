@@ -63,7 +63,6 @@ void gimbal_pid_register()
 	pid_struct_init(&gimbal_t->GMP.positionPID, 2000, 10, 2.0, 0.1, 0.3);
 	pid_struct_init(&gimbal_t->GMP.speedPID, 30000, 3000, 3000.0, 10.0, 0);	 
 	#endif
-
 }
 
 void ControlNM(MotorINFO* id)
@@ -158,6 +157,7 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	NORMALIZE_ANGLE180(id->EncoderAngle);
 	
+	#ifdef USE_CHASSIS_IMU
 	gimbal_yaw_gyro_update(id, gyroZAngle+id->EncoderAngle);
 	gimbal_set_yaw_gyro_angle(id, id->TargetAngle);
 		
@@ -168,14 +168,15 @@ void ControlGMY(MotorINFO* id)
 	
 	yaw=id->TargetAngle;
 	center_offset = ThisAngle - id->EncoderAngle;
-		
 	//Initialize as encoder
 	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
+		id->lastRead = id->EncoderAngle;
 		id->RealAngle = id->EncoderAngle;
 		id->FirstEnter = 0;
 		return;
 	}
-		
+
 	id->RealAngle = ThisAngle;
 	
 	//A bug is hiding here. Because yaw angle is accumulated, after running for a while, TargetAngle may be more than 360. If now change it to encoder angle, boom! 
@@ -184,9 +185,52 @@ void ControlGMY(MotorINFO* id)
 	#endif
 	
 	//Angle Limitation, from -45 to 45 degree
+//	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
 	MINMAX(yaw, center_offset - 45.0f, center_offset + 45.0f);
 	MINMAX(id->EncoderAngle,  - 45.0f,  45.0f);
 	
+	#else
+	
+	float 	ThisAngle = -imu.yaw;
+	float 	Speed = imu.wz;		
+
+			
+	//Initialize as encoder
+	if(id->FirstEnter==1) {
+		//id->lastRead = ThisAngle;
+		id->lastRead = id->EncoderAngle;
+		//if(GMYReseted) id->FirstEnter = 0;
+		id->RealAngle = id->EncoderAngle;
+		id->FirstEnter = 0;
+		return;
+	}
+	
+	//Deal with that imu angle changes from 0 to 360 and accumulative angle 
+	if(ThisAngle <= id->lastRead)
+	{
+		if((id->lastRead-ThisAngle) > 180)
+			 id->RealAngle += (ThisAngle + 360 - id->lastRead);
+		else
+			 id->RealAngle -= (id->lastRead - ThisAngle);
+	}
+	else
+	{
+		if((ThisAngle-id->lastRead) > 180)
+			 id->RealAngle -= (id->lastRead + 360 - ThisAngle);
+		else
+			 id->RealAngle += (ThisAngle - id->lastRead);
+	}
+	id->lastRead = ThisAngle;
+	
+	//A bug is hiding here. Because yaw angle is accumulated, after running for a while, TargetAngle may be more than 360. If now change it to encoder angle, boom! 
+	#ifdef SHOOT_TEST
+	id->RealAngle = id->EncoderAngle;;
+	#endif
+	
+	//Angle Limitation, from -45 to 45 degree
+	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 45.0f, id->RealAngle - id->EncoderAngle + 45.0f);
+	
+	#endif
 	//For initializing slowly
 	if(abs(id->RealAngle-id->TargetAngle)<2) GMYReseted = 1;
 	if(GMYReseted==0) id->positionPID.param.max_out = 0.5;
@@ -205,25 +249,27 @@ void ControlGMP(MotorINFO* id)
 {
 	if(id==0) return;
 	#ifdef INFANTRY3
-		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
+		id->EncoderAngle = (id->RxMsg6623.angle - GM_PITCH_ZERO)/8192.0*360.0;
 	#elif defined GM_TEST
-		id->EncoderAngle = -(id->RxMsgC6x0.angle - GM_PITCH_ZERO)/ENCODER_ANGLE_RATIO;
+		id->EncoderAngle = (id->RxMsgC6x0.angle - GM_PITCH_ZERO)/8192.0*360.0;
 	#endif
-	NORMALIZE_ANGLE180(id->EncoderAngle);//编码器0-8191突变处理
+	NORMALIZE_ANGLE180(id->EncoderAngle);//Deal with that encoder changes from 0 to 8191 
 	
 	#ifdef INFANTRY3
 		id->RealAngle = -imu.pit;
 		float Speed = imu.wy;
 	#elif defined GM_TEST
-		id->RealAngle = id->EncoderAngle;
-		float Speed = -imu.wx;
+		id->RealAngle = -imu.pit;
+		float Speed = imu.wy;
+//		id->RealAngle = -imu.rol;
+//		float Speed = -imu.wx;
 	#endif
 	
 	#ifdef SHOOT_TEST
 		id->RealAngle = id->EncoderAngle;
 	#endif
 	
-	//限位，俯角8度，仰角30度
+	//Limit Angle, -8 to 30
 	MINMAX(id->TargetAngle, id->RealAngle - id->EncoderAngle - 8.0f, id->RealAngle - id->EncoderAngle + 30.0f);
 	
 	///For initializing slowly
@@ -231,8 +277,8 @@ void ControlGMP(MotorINFO* id)
 	if(GMPReseted==0) id->positionPID.param.max_out = 1.6;
 	else id->positionPID.param.max_out = 10.0;
 	
-	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION - PID_PROCESS_Double(id->positionPID, id->speedPID,id->TargetAngle,id->RealAngle,Speed);
-	
+	id->Intensity = GM_PITCH_GRAVITY_COMPENSATION + PID_PROCESS_Double(&(id->positionPID),&(id->speedPID),id->TargetAngle,id->RealAngle,Speed);
+
 	//id->Intensity=0;
 }
 

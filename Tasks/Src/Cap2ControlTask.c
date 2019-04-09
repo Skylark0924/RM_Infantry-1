@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   *FileName     : Cap2ControlTask.c                                            *
-  *Description  : ³¬¼¶µçÈİ¿ª¹Ø¿ØÖÆ³ÌĞò                                        *
-  *Author       : ÌÆĞÀÑô                                                       *
+  *Description  : è¶…çº§ç”µå®¹å¼€å…³æ§åˆ¶ç¨‹åº                                        *
+  *Author       : å”æ¬£é˜³                                                       *
   ******************************************************************************
   *                                                                            *
   * Copyright (c) 2019 Team JiaoLong-ShanghaiJiaoTong University               *
@@ -15,18 +15,18 @@
 #include <string.h>
 #include "includes.h"
 
-/*Ê¹ÓÃÖ®Ç°×¢Òâ£º
-1.°´ÕÕÓ²¼ş°æ±¾ÅäÖÃCube
-2.µ÷ÓÃCap_Init()¡¢Cap_Run()
-3.¼ì²éÓë²ÃÅĞÏµÍ³µÄÍ¨ĞÅ£¬·ñÔòµçÈİÎŞ·¨Õı³£¹¤×÷
+/*ä½¿ç”¨ä¹‹å‰æ³¨æ„ï¼š
+1.æŒ‰ç…§ç¡¬ä»¶ç‰ˆæœ¬é…ç½®Cube
+2.è°ƒç”¨Cap_Init()ã€Cap_Run()
+3.æ£€æŸ¥ä¸è£åˆ¤ç³»ç»Ÿçš„é€šä¿¡ï¼Œå¦åˆ™ç”µå®¹æ— æ³•æ­£å¸¸å·¥ä½œ
 */
 
-//ÆôÓÃµçÈİµÄ°æ±¾,ÇëÎñ±ØÓë³µÉÏµÄÓ²¼ş°æ±¾ÏàÒ»ÖÂ
+//å¯ç”¨ç”µå®¹çš„ç‰ˆæœ¬,è¯·åŠ¡å¿…ä¸è½¦ä¸Šçš„ç¡¬ä»¶ç‰ˆæœ¬ç›¸ä¸€è‡´
 //#define USE_CAP1
 //#define USE_CAP2
 #define USE_CAPex
 
-//¸÷°æ±¾ÏÂÆôÓÃÔËĞĞÄ£Ê½
+//å„ç‰ˆæœ¬ä¸‹å¯ç”¨è¿è¡Œæ¨¡å¼
 #ifdef USE_CAP1
   #define CAP_AUTO_RECHARGE
   //#define CAP_DEBUG
@@ -217,7 +217,7 @@ void Cap_Run(void) {
 	#endif /* CAP_LED_SHOW */
 	Cap_Ctr();
 	Cap_State();
-	user_data.mask = 0xC0 | ((1 << ((int)(((pow(VAL__CAP_VOLTAGE,2) - pow(RELEASE_VOLTAGE_MIN,2)) / (pow(RECHARGE_VOLTAGE_MAX,2) - pow(RELEASE_VOLTAGE_MIN,2))) * 6 + 1))) - 1);
+	user_data.mask = 0xC0 | ((1 << ((int)(((pow(VAL__CAP_VOLTAGE,2) - pow(10,2)) / (pow(23,2) - pow(10,2))) * 6 + 1))) - 1);
 }
 
 void Cap_State_Switch(cap_state State) {
@@ -476,8 +476,9 @@ static void Cap_Ctr_RECHARGE() {
   #endif /* USE_CAP2 */
 	
 	#ifdef USE_CAPex
-	  if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.TargetAngle) > 5000 || fabs(chassis_t->CMFR.TargetAngle) > 5000 || \
-					  fabs(chassis_t->CMBL.TargetAngle) > 5000 || fabs(chassis_t->CMBR.TargetAngle) > 5000 || PowerHeatData.chassisPowerBuffer < 30.0f){
+
+	  if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.offical_speedPID.fdb - chassis_t->CMFL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMFR.offical_speedPID.fdb - chassis_t->CMFR.offical_speedPID.ref) > 3000 || \
+					  fabs(chassis_t->CMBL.offical_speedPID.fdb - chassis_t->CMBL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMBR.offical_speedPID.fdb - chassis_t->CMBR.offical_speedPID.ref) > 300 || PowerHeatData.chassisPowerBuffer < 30.0f){
 			      HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_RESET);
 		  	}else{
 				    HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_SET);
@@ -502,8 +503,8 @@ static void Cap_Ctr_RECHARGE() {
 static void Cap_Ctr_TEMP_RECHARGE() {
 	
 	#ifdef USE_CAPex
-	  if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.TargetAngle) > 5000 || fabs(chassis_t->CMFR.TargetAngle) > 5000 || \
-					  fabs(chassis_t->CMBL.TargetAngle) > 5000 || fabs(chassis_t->CMBR.TargetAngle) > 5000 || PowerHeatData.chassisPowerBuffer < 30.0f){
+	  if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.offical_speedPID.fdb - chassis_t->CMFL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMFR.offical_speedPID.fdb - chassis_t->CMFR.offical_speedPID.ref) > 3000 || \
+					  fabs(chassis_t->CMBL.offical_speedPID.fdb - chassis_t->CMBL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMBR.offical_speedPID.fdb - chassis_t->CMBR.offical_speedPID.ref) > 300 || PowerHeatData.chassisPowerBuffer < 30.0f){
 			      HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_RESET);
 		  	}else{
 				    HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_SET);
@@ -575,8 +576,8 @@ static void Cap_Ctr_RELEASE() {
 		      Cap_State_Switch(CAP_STATE_TEMP_RECHARGE);
 	      }
 	      else {
-					if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.TargetAngle) > 5000 || fabs(chassis_t->CMFR.TargetAngle) > 5000 || \
-					    fabs(chassis_t->CMBL.TargetAngle) > 5000 || fabs(chassis_t->CMBR.TargetAngle) > 5000 || PowerHeatData.chassisPowerBuffer < 30.0f){
+					if (VAL__CAP_VOLTAGE > RECHARGE_VOLTAGE_MAX  || fabs(chassis_t->CMFL.offical_speedPID.fdb - chassis_t->CMFL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMFR.offical_speedPID.fdb - chassis_t->CMFR.offical_speedPID.ref) > 3000 || \
+					  fabs(chassis_t->CMBL.offical_speedPID.fdb - chassis_t->CMBL.offical_speedPID.ref) > 300 || fabs(chassis_t->CMBR.offical_speedPID.fdb - chassis_t->CMBR.offical_speedPID.ref) > 300 || PowerHeatData.chassisPowerBuffer < 30.0f){
 			        HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_RESET);
 		  	  }else{
 				      HAL_GPIO_WritePin(Cap_In_GPIO_Port, Cap_In_Pin, GPIO_PIN_SET);
@@ -665,7 +666,7 @@ void LED_Show_SuperCap_Voltage(uint8_t flag)
 		HAL_GPIO_WritePin(GPIOG, 0x1fe, GPIO_PIN_SET);
 	else {
 		HAL_GPIO_WritePin(GPIOG, 0x1fe, GPIO_PIN_SET);
-		int unlight = 7 - (int) ( ((pow(VAL__CAP_VOLTAGE,2) - pow(RELEASE_VOLTAGE_MIN,2)) / (pow(RECHARGE_VOLTAGE_MAX,2) - pow(RELEASE_VOLTAGE_MIN,2))) * 6);
+		int unlight = 7 - (int) ( ((pow(VAL__CAP_VOLTAGE,2) - pow(10,2)) / (pow(23,2) - pow(10,2))) * 6);
 		if (unlight < 0) unlight = 0;
 		HAL_GPIO_WritePin(GPIOG, 0x1fe >> unlight, GPIO_PIN_RESET);
 	}

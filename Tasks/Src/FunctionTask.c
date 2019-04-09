@@ -1,7 +1,7 @@
  /**
   ******************************************************************************
   * File Name          : FunctionTask.c
-  * Description        : ÓÃÓÚ¼ÇÂ¼»úÆ÷ÈË¶ÀÓĞµÄ¹¦ÄÜ
+  * Description        : ç”¨äºè®°å½•æœºå™¨äººç‹¬æœ‰çš„åŠŸèƒ½
   ******************************************************************************
   *
   * Copyright (c) 2018 Team TPP-Shanghai Jiao Tong University
@@ -15,13 +15,13 @@
 KeyboardMode_e KeyboardMode = NO_CHANGE;
 MouseMode_e MouseLMode = NO_CLICK;
 MouseMode_e MouseRMode = NO_CLICK;
-RampGen_t LRSpeedRamp = RAMP_GEN_DAFAULT;   	//Ğ±ÆÂº¯Êı
+RampGen_t LRSpeedRamp = RAMP_GEN_DAFAULT;   	//æ–œå¡å‡½æ•°
 RampGen_t FBSpeedRamp = RAMP_GEN_DAFAULT;
 ChassisSpeed_Ref_t ChassisSpeedRef; 
 
 int ChassisTwistGapAngle = 0;
 
-int32_t auto_counter=0;		//ÓÃÓÚ×¼È·ÑÓÊ±µÄÍê³ÉÄ³ÊÂ¼ş
+int32_t auto_counter=0;		//ç”¨äºå‡†ç¡®å»¶æ—¶çš„å®ŒæˆæŸäº‹ä»¶
 
 int16_t channelrrow = 0;
 int16_t channelrcol = 0;
@@ -36,12 +36,12 @@ uint16_t allowBullet0 = 0;
 uint8_t ChassisTwistState = 0;
 int16_t FrictionLSpeedLow = -5000;
 int16_t FrictionLSpeedMid = -6500;
-int16_t FrictionLSpeedHigh = -8000;
+int16_t FrictionLSpeedHigh = -7500;
 int8_t aimcount=0, chassiscount=0, servocount=0;
 
 
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 void FunctionTaskInit()
 {
 	LRSpeedRamp.SetScale(&LRSpeedRamp, MOUSE_LR_RAMP_TICK_COUNT);
@@ -59,13 +59,13 @@ void FunctionTaskInit()
 void OptionalFunction()
 {
 		if (Cap_Get_Cap_State() == CAP_STATE_STOP){
-      CurBased_PowerLimitation(); //»ùÓÚ×Ô²â¹¦ÂÊµÄ¹¦ÂÊÏŞÖÆ£¬ÊÊÓÃÓÚ³äµçºÍÍ£Ö¹×´Ì¬
+      CurBased_PowerLimitation(); //åŸºäºè‡ªæµ‹åŠŸç‡çš„åŠŸç‡é™åˆ¶ï¼Œé€‚ç”¨äºå……ç”µå’Œåœæ­¢çŠ¶æ€
 		  }else{
 		    if (Cap_Get_Cap_State() == CAP_STATE_RECHARGE || Cap_Get_Cap_State() == CAP_STATE_TEMP_RECHARGE)
-		      CurBased_PowerLimitation();//»ùÓÚ×Ô²â¹¦ÂÊµÄ¹¦ÂÊÏŞÖÆ£¬ÊÊÓÃÓÚ³äµçºÍÍ£Ö¹×´Ì¬
+		      CurBased_PowerLimitation();//åŸºäºè‡ªæµ‹åŠŸç‡çš„åŠŸç‡é™åˆ¶ï¼Œé€‚ç”¨äºå……ç”µå’Œåœæ­¢çŠ¶æ€
 		      else{
 		        if (Cap_Get_Cap_State() == CAP_STATE_RELEASE)
-		          CapBased_PowerLimitation();//³¬¼¶µçÈİ¹¤×÷Ä£Ê½ÏÂµÄ¹¦ÂÊÏŞÖÆ
+		          CapBased_PowerLimitation();//è¶…çº§ç”µå®¹å·¥ä½œæ¨¡å¼ä¸‹çš„åŠŸç‡é™åˆ¶
 		      }
 	    }
 }
@@ -78,7 +78,7 @@ void Limit_and_Synchronization()
 	//demo end
 }
 //******************
-//Ò£¿ØÆ÷Ä£Ê½¹¦ÄÜ±àĞ´
+//é¥æ§å™¨æ¨¡å¼åŠŸèƒ½ç¼–å†™
 //******************
 void RemoteControlProcess(Remote *rc)
 {
@@ -118,7 +118,7 @@ void RemoteControlProcess(Remote *rc)
 		AutoAimGMCTRL();
 		#endif /*USE_AUTOAIM*/
 		
-		/*Ò£¿ØÆ÷×ó²àÖáêşµ½×îÏÂ£¬¿ªÆô²Õ¸Ç*/
+		/*é¥æ§å™¨å·¦ä¾§è½´æ°åˆ°æœ€ä¸‹ï¼Œå¼€å¯èˆ±ç›–*/
 		if(rc->ch3 == 0x16C)
 		{
 			//twist_state = 1;
@@ -127,7 +127,7 @@ void RemoteControlProcess(Remote *rc)
 			sprintf(ServoMes, "#%03dP%04dT%04d!", servo_id, pwm, time);
 			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
 		}
-		/*·ñÔò¹Ø±Õ²Õ¸Ç*/
+		/*å¦åˆ™å…³é—­èˆ±ç›–*/
 		else 
 		{
 //			twist_state = 0;
@@ -141,7 +141,7 @@ void RemoteControlProcess(Remote *rc)
 	
 	if(WorkState == ADDITIONAL_STATE_ONE)
 	{
-		//for debug SuperC£¬ÔİÊ±ÓÃ²»µ½ÁË
+		//for debug SuperCï¼Œæš‚æ—¶ç”¨ä¸åˆ°äº†
 //		if(SuperCTestMode==1)
 //		{
 //			
@@ -165,7 +165,7 @@ void RemoteControlProcess(Remote *rc)
 		{
 			gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		}
-		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		//gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
@@ -181,12 +181,10 @@ void RemoteControlProcess(Remote *rc)
 			ShootState = 1;
 			shoot_t->FRICL.TargetAngle = FrictionLSpeedHigh;
 			shoot_t->FRICR.TargetAngle = -FrictionLSpeedHigh;
-			//´ò¿ª¼¤¹â
+			//æ‰“å¼€æ¿€å…‰
 		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		}
 
-		
-		
 		#ifdef USE_AUTOAIM
 		aim_mode=1;
 		AutoAimGMCTRL();
@@ -194,6 +192,9 @@ void RemoteControlProcess(Remote *rc)
 	}
 	if(WorkState == ADDITIONAL_STATE_TWO)
 	{
+		if(LastState != WorkState){
+      Cap_State_Switch(CAP_STATE_STOP);
+    }
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
@@ -222,7 +223,7 @@ void RemoteControlProcess(Remote *rc)
 		  AutoAimGMCTRL();
 		  #endif /*USE_AUTOAIM*/
 		}else
-		if(SuperCTestMode == 0) {ChassisTwistState = 1;} //³¬¼¶µçÈİÄ£Ê½ÏÂ¿ªÆôÅ¤Ñü
+		if(SuperCTestMode == 0) {ChassisTwistState = 1;} //è¶…çº§ç”µå®¹æ¨¡å¼ä¸‹å¼€å¯æ‰­è…°
 		
 	}
 	FreshSuperCState();
@@ -242,7 +243,7 @@ void KeyboardModeFSM(Key *key);
 void MouseModeFSM(Mouse *mouse);
 
 //****************
-//¼üÊóÄ£Ê½¹¦ÄÜ±àĞ´
+//é”®é¼ æ¨¡å¼åŠŸèƒ½ç¼–å†™
 //****************
 void ShootOneBullet()
 {
@@ -299,7 +300,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	MINMAX(mouse->x, -150, 150); 
 	MINMAX(mouse->y, -150, 150); 
 	
-	gimbal_t->GMP.TargetAngle += mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+	gimbal_t->GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+
 	#ifdef USE_CHASSIS_FOLLOW
 		gimbal_t->GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
 	#else
@@ -348,11 +350,10 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 		default: break;
 	}
 	
-	if (Cap_Get_Cap_State() != CAP_STATE_STOP )
+  if (Cap_Get_Cap_State() == CAP_STATE_STOP || Cap_Get_Cap_State() == CAP_STATE_RECHARGE)
 	{
-	    Cap_State_Switch(CAP_STATE_STOP);
+		Cap_State_Switch(CAP_STATE_RELEASE);
 	}
-
 	KeyboardModeFSM(key);
 	
 	switch (KeyboardMode)
@@ -412,7 +413,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				shoot_t->FRICR.TargetAngle = -FrictionLSpeedHigh;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
-			else if(key->v & KEY_F)
+			else if(key->v & KEY_F)	//press Q to open Chassis Twist, press agine to close
 			{
 				aimcount++;
 				if (aimcount%2==0)
@@ -420,7 +421,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 				else
 					aim_mode=1;
 			}
-			else if (key->v & KEY_Q)
+			else if (key->v & KEY_Q)	//press Q to open Chassis Twist, press agine to close
 			{
 				chassiscount++;
 				if (chassiscount%2==0)
@@ -431,8 +432,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 					
 			else if(key->v & KEY_G)
 			{
-					/*°´×¡G¿ØÖÆ¶æ»ú£¬¿ªÆô²Õ¸Ç*/
-					int id = 0, pwm = 1800, time = 0;
+					/*æŒ‰ä½Gæ§åˆ¶èˆµæœºï¼Œå¼€å¯èˆ±ç›–*/
+					int id = 0, pwm = 1200, time = 0;
 					char ServoMes[15];
 					sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
 					HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);	
@@ -446,7 +447,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			{
 				
 			}
-			/*²»°´G£¬¹Ø±Õ²Õ¸Ç*/
+			/*ä¸æŒ‰Gï¼Œå…³é—­èˆ±ç›–*/
 			int id = 0, pwm = 500, time = 0;
 			char ServoMes[15];
 			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
@@ -475,11 +476,7 @@ void KeyboardModeFSM(Key *key)
 	}
 	else if(key->v & KEY_SHIFT)//Shift
 	{
-		if (Cap_Get_Cap_State() != CAP_STATE_RELEASE )
-	  {
-			Cap_State_Switch(CAP_STATE_RELEASE);
-		}
-		if(Cap_Get_Cap_Voltage()>12)
+		if(Cap_Get_Cap_Voltage()>9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE)
 		{
 			KM_FORWORD_BACK_SPEED=  HIGH_FORWARD_BACK_SPEED;
 			KM_LEFT_RIGHT_SPEED = HIGH_LEFT_RIGHT_SPEED;
@@ -594,7 +591,7 @@ void MouseModeFSM(Mouse *mouse)
 	}
 }
 
-//ÓÃÓÚÒ£¿ØÆ÷Ä£Ê½ÏÂ³¬¼¶µçÈİ²âÊÔÄ£Ê½µÄ¿ØÖÆ
+//ç”¨äºé¥æ§å™¨æ¨¡å¼ä¸‹è¶…çº§ç”µå®¹æµ‹è¯•æ¨¡å¼çš„æ§åˆ¶
 void FreshSuperCState(void)
 {
 	static uint8_t counter = 0;
