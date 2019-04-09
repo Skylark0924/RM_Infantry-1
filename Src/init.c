@@ -15,24 +15,36 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include "includes.h"
+#include "init.h"
+#include "MotorTask.h"
 
 
-
-void Init_Motor_Task(gimbal *gimbal, chassis *chassis, shoot *shoot)
+void Init_Motor_Task(void)
 {
+	chassis_pid_register();
+	shoot_pid_register();
+	gimbal_pid_register();
+	MotorINFO *canlist1[8]={&shoot_t->FRICL,&shoot_t->FRICR,0,0,&gimbal_t->GMY,&gimbal_t->GMP,&shoot_t->STIR,0};
+  MotorINFO *canliat2[8]={&chassis_t->CMFL,&chassis_t->CMFR,&chassis_t->CMBL,&chassis_t->CMBR,0,0,0,0};
+	
+	for(int i=0; i<8; i++)
+	{
+		can1[i]=canlist1[i];
+		can2[i]=canliat2[i];
+	}
+	
 	// gimbal task init
-	ControlGMY(&gimbal->GMY);
-	ControlGMP(&gimbal->GMP);
+	ControlGMY(&gimbal_t->GMY);
+	ControlGMP(&gimbal_t->GMP);
 	
 	//chassis task init
-	ControlCM(&chassis->CMBL);
-	ControlCM(&chassis->CMBR);
-	ControlCM(&chassis->CMFL);
-	ControlCM(&chassis->CMFR);
+	ControlCM(&chassis_t->CMBL);
+	ControlCM(&chassis_t->CMBR);
+	ControlCM(&chassis_t->CMFL);
+	ControlCM(&chassis_t->CMFR);
 	
 	//shoot task init
-	ControlCM(&shoot->FRICL);
-	ControlCM(&shoot->FRICR);
-	ControlSTIR(&shoot->STIR);	
+	ControlCM(&shoot_t->FRICL);
+	ControlCM(&shoot_t->FRICR);
+	ControlSTIR(&shoot_t->STIR);	
 }

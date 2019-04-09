@@ -27,8 +27,9 @@
 #define CHASSIS_APP 0
 #define GIMBAL_APP  1
 
-uint8_t get_sys_cfg(void);
-void hw_init(void);
-void task_init(void);
+#include "MotorTask.h"
+	
+
+void Init_Motor_Task(void);
 
 #endif // __INIT_H__

@@ -65,27 +65,27 @@ typedef enum
 	ESC_6623=1
 }ESCtype_e;
 
-typedef struct gimbal_p_y
+typedef __packed struct gimbal_p_y
 {
   /* unit: degree */
   float yaw;
   float pitch;  
 }gimbal_p_y;
 
-typedef struct gimbal_rate
+typedef __packed struct gimbal_rate
 {
   /* unit: degree/s */
   float yaw_rate;
   float pitch_rate;  
 }gimbal_rate;
 
-typedef struct gimbal_sensor
+typedef __packed struct gimbal_sensor
 {
   gimbal_p_y gyro_angle;
   gimbal_rate rate;
 }gimbal_sensor;
 
-typedef struct MotorINFO
+typedef __packed struct MotorINFO
 {
 	ESCtype_e			ESCtype;
 	CAN_HandleTypeDef* 	CAN_TYPE;
@@ -110,13 +110,13 @@ typedef struct MotorINFO
 }MotorINFO;
 
 
-typedef struct gimbal
+typedef __packed struct gimbal
 {
 	MotorINFO GMY;
 	MotorINFO GMP;
 }gimbal;
 
-typedef struct chassis
+typedef __packed struct chassis
 {
 	MotorINFO CMFL;
 	MotorINFO CMFR;
@@ -124,7 +124,7 @@ typedef struct chassis
 	MotorINFO CMBL;
 }chassis;
 
-typedef struct shoot
+typedef __packed struct shoot
 {
 	MotorINFO FRICL;
 	MotorINFO FRICR;
@@ -135,9 +135,12 @@ typedef struct shoot
 extern gimbal *gimbal_t;
 extern chassis *chassis_t;
 extern shoot *shoot_t;
-extern MotorINFO *can1[8],*can2[8];
+extern MotorINFO *can1[8], *can2[8];
 
-void Init_Motor_Id(gimbal *gimbal, chassis *chassis, shoot *shoot);
+void chassis_pid_register(void);
+void shoot_pid_register(void);
+void gimbal_pid_register(void);
+
 void InitMotor(MotorINFO *id);
 void Motor_ID_Setting(void);
 
@@ -145,6 +148,12 @@ void setCAN11(void);
 void setCAN12(void);
 void setCAN21(void);
 void setCAN22(void);
+
+void ControlNM(MotorINFO *id);
+void ControlSTIR(MotorINFO *id);
+void ControlCM(MotorINFO *id);
+void ControlGMY(MotorINFO *id);
+void ControlGMP(MotorINFO *id);
 
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 void gimbal_set_yaw_gyro_angle(MotorINFO* id, float yaw);

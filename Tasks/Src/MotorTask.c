@@ -9,6 +9,8 @@
     *
 ******************************************************************************
   */
+	
+#include "MotorTask.h"
 #include "includes.h"
 
 //void ControlNM(MotorINFO *id);
@@ -17,60 +19,51 @@
 //void ControlGMY(MotorINFO *id);
 //void ControlGMP(MotorINFO *id);
 //static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
-MotorINFO *can1[8],*can2[8];
+MotorINFO *can1[8], *can2[8];
 gimbal *gimbal_t;
 chassis *chassis_t;
 shoot *shoot_t;
 
 
+
 uint8_t GMYReseted = 0;
 uint8_t GMPReseted = 0;
-
 
 //**********************************************************************
 //				pid_struct_init(*pid,maxout,inte_limit,kp,ki,kd)
 //**********************************************************************
-void chassis_pid_register(struct chassis *chassis)
+void chassis_pid_register()
 {
-	pid_struct_init(&chassis->CMFL.speedPID,15000, 500,12.0f,0.17f,2.0f);
-	pid_struct_init(&chassis->CMFR.speedPID,15000, 500,12.0f,0.17f,2.0f);
-	pid_struct_init(&chassis->CMBL.speedPID,15000, 500,12.0f,0.17f,2.0f);
-	pid_struct_init(&chassis->CMBR.speedPID,15000, 500,12.0f,0.17f,2.0f);
+	pid_struct_init(&chassis_t->CMFL.speedPID,15000, 500,12.0f,0.17f,2.0f);
+	pid_struct_init(&chassis_t->CMFR.speedPID,15000, 500,12.0f,0.17f,2.0f);
+	pid_struct_init(&chassis_t->CMBL.speedPID,15000, 500,12.0f,0.17f,2.0f);
+	pid_struct_init(&chassis_t->CMBR.speedPID,15000, 500,12.0f,0.17f,2.0f);
 }
 
-void shoot_pid_register(struct shoot *shoot)
+void shoot_pid_register()
 {
-	pid_struct_init(&shoot->FRICL.speedPID, 30000, 10000,8.5f,0.0f,7.3f);
-	pid_struct_init(&shoot->FRICR.speedPID, 30000, 10000,8.5f,0.0f,7.3f);
-	pid_struct_init(&shoot->STIR.positionPID, 15000.0, 100, 100.0, 2.0, 0.6);
-	pid_struct_init(&shoot->STIR.speedPID, 15000.0, 0, 1.0, 0.0, 0.0);
+	pid_struct_init(&shoot_t->FRICL.speedPID, 30000, 10000,8.5f,0.0f,7.3f);
+	pid_struct_init(&shoot_t->FRICR.speedPID, 30000, 10000,8.5f,0.0f,7.3f);
+	pid_struct_init(&shoot_t->STIR.positionPID, 15000.0, 100, 100.0, 2.0, 0.6);
+	pid_struct_init(&shoot_t->STIR.speedPID, 15000.0, 0, 1.0, 0.0, 0.0);
 }
 //使用云台电机时，请务必确定校准过零点
-void gimbal_pid_register(struct gimbal *gimbal)
+void gimbal_pid_register()
 {
 	#ifdef INFANTRY3
-	pid_struct_init(&gimbal->GMY.positionPID, 2000, 10, 0.3, 0, 0.1;
-	pid_struct_init(&gimbal->GMY.speedPID, 30000, 3000, 3000, 20, 30);
+	pid_struct_init(&gimbal_t->GMY.positionPID, 2000, 10, 0.3, 0, 0.1;
+	pid_struct_init(&gimbal_t->GMY.speedPID, 30000, 3000, 3000, 20, 30);
 	
-	pid_struct_init(&gimbal->GMP.positionPID, 2000, 10, 0.5, 0, 0.3);
-  pid_struct_init(&gimbal->GMP.speedPID, 30000, 3000, 1000, 80, 0);	
+	pid_struct_init(&gimbal_t->GMP.positionPID, 2000, 10, 0.5, 0, 0.3);
+  pid_struct_init(&gimbal_t->GMP.speedPID, 30000, 3000, 1000, 80, 0);	
 	#elif defined GM_TEST
-	pid_struct_init(&gimbal->GMY.positionPID, 2000, 10, 1.0, 0.1, 0.2);
-	pid_struct_init(&gimbal->GMY.speedPID, 30000, 3000, 5000.0, 10.0, 20.0);
+	pid_struct_init(&gimbal_t->GMY.positionPID, 2000, 10, 1.0, 0.1, 0.2);
+	pid_struct_init(&gimbal_t->GMY.speedPID, 30000, 3000, 5000.0, 10.0, 20.0);
 	
-	pid_struct_init(&gimbal->GMP.positionPID, 2000, 10, 2.0, 0.1, 0.3);
-	pid_struct_init(&gimbal->GMP.speedPID, 30000, 3000, 3000.0, 10.0, 0);	 
+	pid_struct_init(&gimbal_t->GMP.positionPID, 2000, 10, 2.0, 0.1, 0.3);
+	pid_struct_init(&gimbal_t->GMP.speedPID, 30000, 3000, 3000.0, 10.0, 0);	 
 	#endif
 
-}
-
-void Init_Motor_Id(gimbal *gimbal, chassis *chassis, shoot *shoot)
-{
-	MotorINFO* can1[8]={&shoot->FRICL,&shoot->FRICR,0,0,&gimbal->GMY,&gimbal->GMP,&shoot->STIR,0};
-	MotorINFO* can2[8]={&chassis->CMFL,&chassis->CMFR,&chassis->CMBL,&chassis->CMBR,0,0,0,0};
-	chassis_pid_register(chassis_t);
-	shoot_pid_register(shoot_t);
-	gimbal_pid_register(gimbal_t);
 }
 
 void ControlNM(MotorINFO* id)
@@ -102,7 +95,6 @@ void ControlNM(MotorINFO* id)
 		
 		id->s_count = 0;
 		id->lastRead = ThisAngle;
-		
 	}
 	else
 	{
@@ -206,10 +198,7 @@ void ControlGMY(MotorINFO* id)
 	id->Intensity = PID_PROCESS_Double(id->positionPID, id->speedPID, id->TargetAngle,id->RealAngle,Speed);
 	#endif
 	//id->Intensity=0;
-
 }
-
-
 
 //Pitch, bending up id positive, benging down is negative 
 void ControlGMP(MotorINFO* id)

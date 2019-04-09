@@ -25,7 +25,7 @@
 #endif
 
 
-typedef struct pid_param
+typedef __packed struct pid_param
 {
   float p;
   float i;
@@ -36,7 +36,7 @@ typedef struct pid_param
   float inte_limit;
 }pid_param;
 
-typedef struct pid
+typedef __packed struct pid
 {
   pid_param param;
 

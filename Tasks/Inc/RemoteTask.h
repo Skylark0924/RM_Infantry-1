@@ -12,6 +12,7 @@
 #ifndef __REMOTETASK_H
 #define __REMOTETASK_H
 
+#include "MotorTask.h"
 #include "includes.h"
 
 //解算数据区
@@ -101,7 +102,7 @@ extern uint8_t rx_free;
 
 void RemoteDataProcess(uint8_t *pData);
 void InitRemoteControl(void);
-void RemoteControlProcess(Remote *rc, gimbal *gimbal_t, shoot *shoot_t);
-void MouseKeyControlProcess(Mouse *mouse, Key *key, gimbal *gimbal_t, shoot *shoot_t);
+void RemoteControlProcess(Remote *rc);
+void MouseKeyControlProcess(Mouse *mouse, Key *key);
 
 #endif /*__ REMOTETASK_H */

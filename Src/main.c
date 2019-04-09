@@ -156,9 +156,8 @@ int main(void)
 	for(int i=0;i<8;i++) {InitMotor(can1[i]);InitMotor(can2[i]);}
 	InitPWM();
 	InitCanReception();
-	Init_Motor_Id(gimbal_t, chassis_t, shoot_t);
-	Init_Motor_Task(gimbal_t, chassis_t, shoot_t);
 	//InitGyroUart();
+	Init_Motor_Task();
 	InitJudgeUart();
 	/*弹舱舵机初始化*/
 	InitServoUart();
@@ -170,6 +169,7 @@ int main(void)
 	imu_temp_ctrl_init();
 	/*****陀螺仪初始化结束*****/
 	MX_IWDG_Init();							//Cube配置完记得注释掉上面自动生成的看门狗初始化函数
+
 	#ifdef	USE_AUTOAIM
 		InitAutoAim();
 	#endif /*USE_AUTOAIM*/
@@ -200,6 +200,7 @@ int main(void)
 	__HAL_UART_ENABLE_IT(&UPPER_UART, UART_IT_IDLE);
 	
 	Cap_Init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

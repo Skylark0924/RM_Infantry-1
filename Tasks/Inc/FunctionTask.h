@@ -12,6 +12,7 @@
 #ifndef __FUNCTIONTASK_H
 #define __FUNCTIONTASK_H
 
+#include "MotorTask.h"
 #include "includes.h"
 
 //Ò£¿Ø³£Á¿Çø
@@ -113,7 +114,7 @@ void FunctionTaskInit(void);
 void Limit_Position(void);
 void OptionalFunction(void);
 void FreshSuperCState(void);
-void ChassisTwist(gimbal *gimbal_t);
+void ChassisTwist(void);
 void ChassisDeTwist(void);
 void LJHTwist(void);
 

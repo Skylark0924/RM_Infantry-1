@@ -17,7 +17,7 @@
 
 #include "pid.h"
 
-void abs_limit(float *a, float ABS_MAX)
+void abs_limit(__packed float *a, float ABS_MAX)
 {
   if (*a > ABS_MAX)
     *a = ABS_MAX;
@@ -72,7 +72,7 @@ float pid_calculate(struct pid *pid, float feedback, float target)
   pid->feedback = feedback;
   pid->target = target;
   pid->err = target - feedback;
-  if ((pid->param.input_max_err != 0) && (fabs(pid->err) > pid->param.input_max_err))
+  if ((pid->param.input_max_err != 0) && (__fabs(pid->err) > pid->param.input_max_err))
     return 0;
 
   pid->pout = pid->param.p * pid->err;

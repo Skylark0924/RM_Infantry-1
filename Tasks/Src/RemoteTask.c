@@ -111,14 +111,14 @@ void RemoteDataProcess(uint8_t *pData)
 		{
 			if(WorkState > 0)
 			{ 
-				RemoteControlProcess(&(RC_CtrlData.rc), gimbal_t, shoot_t);
+				RemoteControlProcess(&(RC_CtrlData.rc));
 			}
 		}break;
 		case KEY_MOUSE_INPUT:              
 		{
 			if(WorkState > 0)
 			{ 
-				MouseKeyControlProcess(&RC_CtrlData.mouse,&RC_CtrlData.key, gimbal_t, shoot_t);
+				MouseKeyControlProcess(&RC_CtrlData.mouse,&RC_CtrlData.key);
 			}
 		}break;
 		case STOP:               

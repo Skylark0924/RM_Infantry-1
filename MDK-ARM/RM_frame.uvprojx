@@ -508,6 +508,11 @@
               <FilePath>..\Tasks\Inc\AuxDevice.h</FilePath>
             </File>
             <File>
+              <FileName>init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\init.c</FilePath>
+            </File>
+            <File>
               <FileName>FunctionTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\FunctionTask.c</FilePath>
@@ -586,11 +591,6 @@
               <FileName>fuzzy_pid_regulator.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tasks\Src\fuzzy_pid_regulator.c</FilePath>
-            </File>
-            <File>
-              <FileName>init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\init.c</FilePath>
             </File>
           </Files>
         </Group>

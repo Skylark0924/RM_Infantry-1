@@ -9,6 +9,7 @@
   *
   ******************************************************************************
   */
+#include "MotorTask.h"
 #include "includes.h"
 #define  STIR_STEP_ANGLE 45
 KeyboardMode_e KeyboardMode = NO_CHANGE;
@@ -79,7 +80,7 @@ void Limit_and_Synchronization()
 //******************
 //遥控器模式功能编写
 //******************
-void RemoteControlProcess(Remote *rc, gimbal *gimbal_t, shoot *shoot_t)
+void RemoteControlProcess(Remote *rc)
 {
 	static WorkState_e LastState = STOP_STATE;
 	if(WorkState <= 0) return;
@@ -291,7 +292,7 @@ void ShootOneBullet()
 	#endif
 }
 
-void MouseKeyControlProcess(Mouse *mouse, Key *key, gimbal *gimbal_t, shoot *shoot_t)
+void MouseKeyControlProcess(Mouse *mouse, Key *key)
 {	
 	if(WorkState <= 0) return;
 	
@@ -453,7 +454,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key, gimbal *gimbal_t, shoot *sho
 			/***************/
 
 			if(ChassisTwistState)
-					ChassisTwist(gimbal_t);
+					ChassisTwist();
 			else
 				ChassisDeTwist();
 			if(aim_mode)
@@ -642,7 +643,7 @@ void FreshSuperCState(void)
 //		HAL_GPIO_WritePin(GPIOG, LED8_Pin, GPIO_PIN_SET);
 }
 
-void ChassisTwist(gimbal *gimbal_t)
+void ChassisTwist(void)
 {
 	switch (ChassisTwistGapAngle)
 	{
@@ -668,5 +669,5 @@ void ChassisDeTwist(void)
 
 void LJHTwist(void)
 {
-	ChassisTwist(gimbal_t);
+	ChassisTwist();
 }
