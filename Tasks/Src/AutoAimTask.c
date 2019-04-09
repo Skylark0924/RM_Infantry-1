@@ -215,8 +215,8 @@ void AutoAimNormal()
 //		if(aim_cnt<1)
 //		{
 	//		GMY.TargetAngle+=(aim.yaw)/8;
-			GMY.TargetAngle+=(aim.yaw)/5*(0.5f+0.012f*track_cnt) - 0.02f;
-			GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/6 - 0.17f;
+			gimbal_t->GMY.TargetAngle+=(aim.yaw)/5*(0.5f+0.012f*track_cnt) - 0.02f;
+			gimbal_t->GMP.TargetAngle+=(aim.pitch+aim_rcd.pitch)/6 - 0.17f;
 //			aim_cnt++;
 //		}
 //		else
@@ -242,14 +242,14 @@ void AutoAimBuff()
 		if(aim_cnt==0)
 		{
 			aim_rcd.yaw=aim.pitch;
-			GMY.TargetAngle+=aim_rcd.yaw/20;
-			GMP.TargetAngle+=aim_rcd.pitch/20;
+			gimbal_t->GMY.TargetAngle+=aim_rcd.yaw/20;
+			gimbal_t->GMP.TargetAngle+=aim_rcd.pitch/20;
 			aim_cnt++;
 		}
 		else if(aim_cnt>=1 && aim_cnt<20)
 		{
-			GMY.TargetAngle+=aim_rcd.yaw/20;
-			GMP.TargetAngle+=aim_rcd.pitch/20;
+			gimbal_t->GMY.TargetAngle+=aim_rcd.yaw/20;
+			gimbal_t->GMP.TargetAngle+=aim_rcd.pitch/20;
 			aim_cnt++;
 		}
 		//等待云台稳定
@@ -271,8 +271,8 @@ void AutoAimBuff()
 		//重新指向中心
 		else if(aim_cnt>=50 && aim_cnt<70)
 		{
-			GMY.TargetAngle-=aim_rcd.yaw/20;
-			GMP.TargetAngle-=aim_rcd.pitch/20;
+			gimbal_t->GMY.TargetAngle-=aim_rcd.yaw/20;
+			gimbal_t->GMP.TargetAngle-=aim_rcd.pitch/20;
 			aim_cnt++;
 		}
 		else

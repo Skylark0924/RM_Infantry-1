@@ -59,62 +59,33 @@
 	&PID_Calc,&PID_Reset,\
 } 
 
-#define CHASSIS_MOTOR_SPEED_PID_DEFAULT \
-{\
-	0,0,{0,0},\
-	12.0f,0.17f,2.0f,\
-	0,0,0,\
-	15000,15000,15000,\
-	0,12000,0,0,0,\
-	&PID_Calc,&PID_Reset,\
-}
-
-#define FRIC_MOTOR_SPEED_PID_DEFAULT \
-{\
-	0,0,{0,0},\
-	8.5f,0.0f,7.3f,\
-	0,0,0,\
-	10000,10000,10000,\
-	0,7000,0,0,0,\
-	&PID_Calc,&PID_Reset,\
-}
-
-#define FW_PID_DEFAULT \
-{ \
-	0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,\
-	0, 0, 0, 0.0, 0.0, 0.0, \
-	0, 0, 0, 0.0, 0, \
-	{0.0}, \
-	&fw_PID_Calc, &fw_PID_Reset \
-}
-
 typedef enum
 {
 	ESC_C6x0=0,
 	ESC_6623=1
 }ESCtype_e;
 
-typedef struct gimbal_p_y
+typedef __packed struct gimbal_p_y
 {
   /* unit: degree */
   float yaw;
   float pitch;  
 }gimbal_p_y;
 
-typedef struct gimbal_rate
+typedef __packed struct gimbal_rate
 {
   /* unit: degree/s */
   float yaw_rate;
   float pitch_rate;  
 }gimbal_rate;
 
-typedef struct gimbal_sensor
+typedef __packed struct gimbal_sensor
 {
   gimbal_p_y gyro_angle;
   gimbal_rate rate;
 }gimbal_sensor;
 
-typedef struct MotorINFO
+typedef __packed struct MotorINFO
 {
 	ESCtype_e			ESCtype;
 	CAN_HandleTypeDef* 	CAN_TYPE;
@@ -130,9 +101,8 @@ typedef struct MotorINFO
 	double 				lastRead;
 	double 				RealAngle;
 	void (*Handle)(struct MotorINFO* id);
-	fw_PID_Regulator_t 	positionPID;
-	fw_PID_Regulator_t 	speedPID;
-	PID_Regulator_t		offical_speedPID;
+	pid 	positionPID;
+	pid 	speedPID;
 	int16_t				Intensity;
 	float					EncoderAngle;
 	float					EncoderLastAngle;
@@ -140,34 +110,36 @@ typedef struct MotorINFO
 }MotorINFO;
 
 
+typedef __packed struct gimbal
+{
+	MotorINFO GMY;
+	MotorINFO GMP;
+}gimbal;
+
+typedef __packed struct chassis
+{
+	MotorINFO CMFL;
+	MotorINFO CMFR;
+	MotorINFO CMBR;
+	MotorINFO CMBL;
+}chassis;
+
+typedef __packed struct shoot
+{
+	MotorINFO FRICL;
+	MotorINFO FRICR;
+	MotorINFO STIR;
+}shoot;
 
 
+extern gimbal *gimbal_t;
+extern chassis *chassis_t;
+extern shoot *shoot_t;
+extern MotorINFO *can1[8], *can2[8];
 
-
-#define Normal_MOTORINFO_Init(rdc,func,ppid,spid)\
-{\
-	ESC_C6x0,0,0,0,rdc,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	ppid,spid,CHASSIS_MOTOR_SPEED_PID_DEFAULT,0,0,0 \
-}
-
-#define Chassis_MOTORINFO_Init(func,spid)\
-{\
-	ESC_C6x0,0,0,0,1,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	FW_PID_DEFAULT,FW_PID_DEFAULT,spid,0,0,0 \
-}
-
-#define Gimbal_MOTORINFO_Init(rdc,func,ppid,spid)\
-{\
-	ESC_6623,0,0,0,rdc,\
-	{0,0,0},{0,0,0},0,0,1,0,0,0,func,\
-	ppid,spid,CHASSIS_MOTOR_SPEED_PID_DEFAULT,0,0,0 \
-}
-
-
-extern MotorINFO CMFL,CMFR,CMBL,CMBR,GMY,GMP,FRICL,FRICR,STIR,test;
-extern MotorINFO *can1[8],*can2[8];
+void chassis_pid_register(void);
+void shoot_pid_register(void);
+void gimbal_pid_register(void);
 
 void InitMotor(MotorINFO *id);
 void Motor_ID_Setting(void);
@@ -176,6 +148,12 @@ void setCAN11(void);
 void setCAN12(void);
 void setCAN21(void);
 void setCAN22(void);
+
+void ControlNM(MotorINFO *id);
+void ControlSTIR(MotorINFO *id);
+void ControlCM(MotorINFO *id);
+void ControlGMY(MotorINFO *id);
+void ControlGMP(MotorINFO *id);
 
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 void gimbal_set_yaw_gyro_angle(MotorINFO* id, float yaw);

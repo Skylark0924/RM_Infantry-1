@@ -1,0 +1,17 @@
+/home/skylark/clion-2019.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLCHAIN_DIR=/home/skylark/下载/gcc-arm-none-eabi-5_4-2016q3 -G "CodeBlocks - Unix Makefiles" /media/skylark/Document/Github/RM_Infantry-1
+-- The C compiler identification is GNU 7.3.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done
+-- Generating done
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TOOLCHAIN_DIR
+
+
+-- Build files have been written to: /media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug

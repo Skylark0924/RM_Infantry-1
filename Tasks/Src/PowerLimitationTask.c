@@ -16,17 +16,17 @@
 float SpeedAttenuation = 1.0f;
 float LimitFactor = 1.0f;
 uint8_t flag = 1;
-fw_PID_Regulator_t PowerLimitationPID = POWER_LIMITATION_PID_DEFAULT;
+pid PowerLimitationPID = {0};
 
 //底盘功率限制
 void PowerLimitation(void)
 {
 	int32_t sum = 0;
 	int32_t CM_current_max;
-	int32_t CMFLIntensity = CMFL.Intensity;
-	int32_t CMFRIntensity = CMFR.Intensity;
-	int32_t CMBLIntensity = CMBL.Intensity;
-	int32_t CMBRIntensity = CMBR.Intensity;
+	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
+	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
+	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
 	{
@@ -49,9 +49,7 @@ void PowerLimitation(void)
 		sum = __fabs(CMFLIntensity) + __fabs(CMFRIntensity) + __fabs(CMBLIntensity) + __fabs(CMBRIntensity);
 		float realPowerBuffer = PowerHeatData.chassisPowerBuffer;
 		float realPower = PowerHeatData.chassisPower;
-		PowerLimitationPID.feedback = realPower;
-		PowerLimitationPID.target = 75;
-		PowerLimitationPID.Calc(&PowerLimitationPID);
+		pid_calculate(&PowerLimitationPID, realPower, 75);
 		CM_current_max = PowerLimitationPID.output;
 		//LimitFactor += PowerLimitationPID.output/sum;
 		//if(CM_current_max > 0.5) CM_current_max = 0;
@@ -79,10 +77,10 @@ void PowerLimitation(void)
 			CMBRIntensity = (CMBRIntensity/(sum+0.0f))*CM_current_max;
 		}
 	}
-	CMFL.Intensity = CMFLIntensity;
-	CMFR.Intensity = CMFRIntensity;
-	CMBL.Intensity = CMBLIntensity;
-	CMBR.Intensity = CMBRIntensity;
+	chassis_t->CMFL.Intensity = CMFLIntensity;
+	chassis_t->CMFR.Intensity = CMFRIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }
 
@@ -91,10 +89,10 @@ void CurBased_PowerLimitation(void)
 {
 	int32_t sum = 0;
 	int32_t CM_current_max;
-	int32_t CMFLIntensity = CMFL.Intensity;
-	int32_t CMFRIntensity = CMFR.Intensity;
-	int32_t CMBLIntensity = CMBL.Intensity;
-	int32_t CMBRIntensity = CMBR.Intensity;
+	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
+	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
+	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
 	{
@@ -117,9 +115,7 @@ void CurBased_PowerLimitation(void)
 		sum = __fabs(CMFLIntensity) + __fabs(CMFRIntensity) + __fabs(CMBLIntensity) + __fabs(CMBRIntensity);
 		float realPowerBuffer = PowerHeatData.chassisPowerBuffer;
 		float realPower = PowerHeatData.chassisPower;
-		PowerLimitationPID.feedback = realPower;
-		PowerLimitationPID.target = 75;
-		PowerLimitationPID.Calc(&PowerLimitationPID);
+		pid_calculate(&PowerLimitationPID, realPower, 75);
 		CM_current_max = PowerLimitationPID.output;
 		//LimitFactor += PowerLimitationPID.output/sum;
 		//if(CM_current_max > 0.5) CM_current_max = 0;
@@ -133,10 +129,10 @@ void CurBased_PowerLimitation(void)
 		CMBLIntensity *= LimitFactor/sum;
 		CMBRIntensity *= LimitFactor/sum;
 	}
-	CMFL.Intensity = CMFLIntensity;
-	CMFR.Intensity = CMFRIntensity;
-	CMBL.Intensity = CMBLIntensity;
-	CMBR.Intensity = CMBRIntensity;
+	chassis_t->CMFL.Intensity = CMFLIntensity;
+	chassis_t->CMFR.Intensity = CMFRIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }
 
@@ -145,10 +141,10 @@ void CapBased_PowerLimitation(void)
 {
 	int32_t sum = 0;
 	int32_t CM_current_max;
-	int32_t CMFLIntensity = CMFL.Intensity;
-	int32_t CMFRIntensity = CMFR.Intensity;
-	int32_t CMBLIntensity = CMBL.Intensity;
-	int32_t CMBRIntensity = CMBR.Intensity;
+	int32_t CMFLIntensity = chassis_t->CMFL.Intensity;
+	int32_t CMFRIntensity = chassis_t->CMFR.Intensity;
+	int32_t CMBLIntensity = chassis_t->CMBL.Intensity;
+	int32_t CMBRIntensity = chassis_t->CMBR.Intensity;
 	//离线模式
 	if (JUDGE_State == OFFLINE)
 	{
@@ -169,9 +165,7 @@ void CapBased_PowerLimitation(void)
 		sum = __fabs(CMFLIntensity) + __fabs(CMFRIntensity) + __fabs(CMBLIntensity) + __fabs(CMBRIntensity);
 		float realPowerBuffer = PowerHeatData.chassisPowerBuffer;
 		float realPower = PowerHeatData.chassisPower;
-		PowerLimitationPID.feedback = realPower;
-		PowerLimitationPID.target = 75;
-		PowerLimitationPID.Calc(&PowerLimitationPID);
+		pid_calculate(&PowerLimitationPID, realPower, 75);
 		CM_current_max = PowerLimitationPID.output;
 		//LimitFactor += PowerLimitationPID.output/sum;
 		//if(CM_current_max > 0.5) CM_current_max = 0;
@@ -185,10 +179,10 @@ void CapBased_PowerLimitation(void)
 		CMBLIntensity *= LimitFactor/sum;
 		CMBRIntensity *= LimitFactor/sum;
 	}
-	CMFL.Intensity = CMFLIntensity;
-	CMFR.Intensity = CMFRIntensity;
-	CMBL.Intensity = CMBLIntensity;
-	CMBR.Intensity = CMBRIntensity;
+	chassis_t->CMFL.Intensity = CMFLIntensity;
+	chassis_t->CMFR.Intensity = CMFRIntensity;
+	chassis_t->CMBL.Intensity = CMBLIntensity;
+	chassis_t->CMBR.Intensity = CMBRIntensity;
 	rlease_flag = 0;
 }
 
@@ -226,7 +220,7 @@ void CapBased_PowerLimitation(void)
 //		PowerLimitationPID.target = 75;
 //		PowerLimitationPID.Calc(&PowerLimitationPID);
 //		float tmp = SpeedAttenuation * (1 + PowerLimitationPID.output / (__fabs(ChassisSpeedRef.forward_back_ref) + __fabs(ChassisSpeedRef.left_right_ref) + __fabs(ChassisSpeedRef.rotate_ref)));
-//		if(__fabs(CMFL.speedPID.target * tmp) > __fabs(CMFL.speedPID.feedback) && __fabs(CMFR.speedPID.target * tmp) > __fabs(CMFR.speedPID.feedback) && __fabs(CMBL.speedPID.target * tmp) > __fabs(CMBL.speedPID.feedback) && __fabs(CMBR.speedPID.target * tmp) > __fabs(CMBR.speedPID.feedback))
+//		if(__fabs(chassis_t->CMFL.speedPID.target * tmp) > __fabs(chassis_t->CMFL.speedPID.feedback) && __fabs(CMFR.speedPID.target * tmp) > __fabs(CMFR.speedPID.feedback) && __fabs(chassis_t->CMBL.speedPID.target * tmp) > __fabs(chassis_t->CMBL.speedPID.feedback) && __fabs(chassis_t->CMBR.speedPID.target * tmp) > __fabs(chassis_t->CMBR.speedPID.feedback))
 //		//SpeedAttenuation *= (1 + PowerLimitationPID.output / (__fabs(ChassisSpeedRef.forward_back_ref) + __fabs(ChassisSpeedRef.left_right_ref) + __fabs(ChassisSpeedRef.rotate_ref)));
 //			{SpeedAttenuation = tmp;
 //				flag = 1;
@@ -258,10 +252,10 @@ void CapBased_PowerLimitation(void)
 
 //void getRealSpeed(void)
 //{
-//	float RealSpeed_CM1 = CMFL.offical_speedPID.fdb;
+//	float RealSpeed_CM1 = chassis_t->CMFL.offical_speedPID.fdb;
 //	float RealSpeed_CM2 = CMFR.offical_speedPID.fdb;
-//	float RealSpeed_CM3 = CMBL.offical_speedPID.fdb;
-//	float RealSpeed_CM4 = CMBR.offical_speedPID.fdb;
+//	float RealSpeed_CM3 = chassis_t->CMBL.offical_speedPID.fdb;
+//	float RealSpeed_CM4 = chassis_t->CMBR.offical_speedPID.fdb;
 //	RealChassisSpeed.forward_back_ref = (RealSpeed_CM1 - RealSpeed_CM2 + RealSpeed_CM3 - RealSpeed_CM4) / 4.0f / 12.0f;
 //	RealChassisSpeed.left_right_ref = (RealSpeed_CM1 - RealSpeed_CM3 + RealSpeed_CM2 - RealSpeed_CM4) / 4.0f / 12.0f;
 //	RealChassisSpeed.rotate_ref = (RealSpeed_CM1 + RealSpeed_CM3 + RealSpeed_CM2 + RealSpeed_CM4) / 4.0f / 12.0f;

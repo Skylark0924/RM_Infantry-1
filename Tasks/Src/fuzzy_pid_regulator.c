@@ -27,8 +27,8 @@
 #define PL	 3
 
 #define N 3
- 
- 
+
+#define PID_I_CNT 4 
  
 static const float fuzzyRuleKp[7][7]={
 	PL,	PL,	PM,	PM,	PS,	PS,	ZE,
@@ -133,22 +133,6 @@ void fuzzy_PID_Reset(fuzzy_PID_Regulator_t *pid){
 }
 
 void fuzzy_PID_Calc(fuzzy_PID_Regulator_t *pid){
-//	pid->errorCurr = pid->target - pid->feedback;
-//	pid->errorSum += pid->errorCurr - pid->err[pid->SumCount];
-//	pid->err[pid->SumCount] = pid->errorCurr;
-//	pid->SumCount = (pid->SumCount + 1) % PID_I_CNT;
-//	
-//	pid->componentKp = pid->kp * pid->errorCurr;
-//	MINMAX(pid->componentKp, -pid->componentKpMax, pid->componentKpMax);
-//	pid->componentKi = pid->ki * pid->errorSum;
-//	MINMAX(pid->componentKi, -pid->componentKiMax, pid->componentKiMax);
-//	pid->componentKd = pid->kd * (pid->errorCurr - pid->errorLast);
-//	MINMAX(pid->componentKd, -pid->componentKdMax, pid->componentKdMax);
-//	
-//	pid->errorLast = pid->errorCurr;
-//	
-//	pid->output = pid->componentKp + pid->componentKi + pid->componentKd;
-//	MINMAX(pid->output, -pid->outputMax, pid->outputMax);
 	fuzzyPID OUT = {0, 0, 0};
 	float e=0,ec=0;
 	float ke, kec;

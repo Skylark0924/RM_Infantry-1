@@ -136,17 +136,17 @@ int main(void)
   MX_DAC_Init();
 
   /* USER CODE BEGIN 2 */
-	//¸÷Ä£¿é³õÊ¼»¯
+	//å„æ¨¡å—åˆå§‹åŒ–
 	
-	/* ¿ªÆôËÄÂ·24VµçÔ´ */
+	/* å¼€å¯å››è·¯24Vç”µæº */
+
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_2,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_3,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_4,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOH,GPIO_PIN_5,GPIO_PIN_SET);
-
 	/*******************/
 	
-	#ifdef FRIC_PWM_MODE//ÁÙÊ±Ê¹ÓÃ£¬ºóĞø²»ĞèÒª
+	#ifdef FRIC_PWM_MODE//ä¸´æ—¶ä½¿ç”¨ï¼Œåç»­ä¸éœ€è¦
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
 	
 	__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,800);
@@ -158,24 +158,26 @@ int main(void)
 	InitPWM();
 	InitCanReception();
 	//InitGyroUart();
+	Init_Motor_Task();
 	InitJudgeUart();
-	/*µ¯²Õ¶æ»ú³õÊ¼»¯*/
+	/*å¼¹èˆ±èˆµæœºåˆå§‹åŒ–*/
 	InitServoUart();
-	/*µ¯²Õ¶æ»ú³õÊ¼»¯½áÊø*/
-	/*****ÍÓÂİÒÇ³õÊ¼»¯*****/
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);//ÓÃÓÚºãÎÂµç×è
+	/*å¼¹èˆ±èˆµæœºåˆå§‹åŒ–ç»“æŸ*/
+	/*****é™€èºä»ªåˆå§‹åŒ–*****/
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);//ç”¨äºæ’æ¸©ç”µé˜»
 	mpu_device_init();
 	init_quaternion();
 	imu_temp_ctrl_init();
-	/*****ÍÓÂİÒÇ³õÊ¼»¯½áÊø*****/
-	MX_IWDG_Init();							//CubeÅäÖÃÍê¼ÇµÃ×¢ÊÍµôÉÏÃæ×Ô¶¯Éú³ÉµÄ¿´ÃÅ¹·³õÊ¼»¯º¯Êı
+	/*****é™€èºä»ªåˆå§‹åŒ–ç»“æŸ*****/
+	MX_IWDG_Init();							//Cubeé…ç½®å®Œè®°å¾—æ³¨é‡Šæ‰ä¸Šé¢è‡ªåŠ¨ç”Ÿæˆçš„çœ‹é—¨ç‹—åˆå§‹åŒ–å‡½æ•°
+
 	#ifdef	USE_AUTOAIM
 		InitAutoAim();
 	#endif /*USE_AUTOAIM*/
 	
 	#ifdef DEBUG_MODE
 	ctrlUartInit();
-	//Ê±¼äÖĞ¶Ï
+	//æ—¶é—´ä¸­æ–­
 	HAL_TIM_Base_Start_IT(&htim10);
 	#endif
 	HAL_TIM_Base_Start_IT(&htim6);
@@ -186,7 +188,7 @@ int main(void)
 	//ADC
 	//HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_Value,160);
 	
-	//Ê±¼äÖĞ¶Ï
+	//æ—¶é—´ä¸­æ–­
 	HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
 	HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);
@@ -199,6 +201,7 @@ int main(void)
 	__HAL_UART_ENABLE_IT(&UPPER_UART, UART_IT_IDLE);
 	
 	Cap_Init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

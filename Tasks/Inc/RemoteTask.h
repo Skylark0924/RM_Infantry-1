@@ -12,6 +12,7 @@
 #ifndef __REMOTETASK_H
 #define __REMOTETASK_H
 
+#include "MotorTask.h"
 #include "includes.h"
 
 //解算数据区

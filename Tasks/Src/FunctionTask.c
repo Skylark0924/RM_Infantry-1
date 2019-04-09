@@ -1,7 +1,7 @@
-/**
+ /**
   ******************************************************************************
   * File Name          : FunctionTask.c
-  * Description        : ÓÃÓÚ¼ÇÂ¼»úÆ÷ÈË¶ÀÓÐµÄ¹¦ÄÜ
+  * Description        : ç”¨äºŽè®°å½•æœºå™¨äººç‹¬æœ‰çš„åŠŸèƒ½
   ******************************************************************************
   *
   * Copyright (c) 2018 Team TPP-Shanghai Jiao Tong University
@@ -9,18 +9,19 @@
   *
   ******************************************************************************
   */
+#include "MotorTask.h"
 #include "includes.h"
 #define  STIR_STEP_ANGLE 45
 KeyboardMode_e KeyboardMode = NO_CHANGE;
 MouseMode_e MouseLMode = NO_CLICK;
 MouseMode_e MouseRMode = NO_CLICK;
-RampGen_t LRSpeedRamp = RAMP_GEN_DAFAULT;   	//Ð±ÆÂº¯Êý
+RampGen_t LRSpeedRamp = RAMP_GEN_DAFAULT;   	//æ–œå¡å‡½æ•°
 RampGen_t FBSpeedRamp = RAMP_GEN_DAFAULT;
 ChassisSpeed_Ref_t ChassisSpeedRef; 
 
 int ChassisTwistGapAngle = 0;
 
-int32_t auto_counter=0;		//ÓÃÓÚ×¼È·ÑÓÊ±µÄÍê³ÉÄ³ÊÂ¼þ
+int32_t auto_counter=0;		//ç”¨äºŽå‡†ç¡®å»¶æ—¶çš„å®ŒæˆæŸäº‹ä»¶
 
 int16_t channelrrow = 0;
 int16_t channelrcol = 0;
@@ -39,7 +40,8 @@ int16_t FrictionLSpeedHigh = -7500;
 int8_t aimcount=0, chassiscount=0, servocount=0;
 
 
-//³õÊ¼»¯
+
+//åˆå§‹åŒ–
 void FunctionTaskInit()
 {
 	LRSpeedRamp.SetScale(&LRSpeedRamp, MOUSE_LR_RAMP_TICK_COUNT);
@@ -57,13 +59,13 @@ void FunctionTaskInit()
 void OptionalFunction()
 {
 		if (Cap_Get_Cap_State() == CAP_STATE_STOP){
-      CurBased_PowerLimitation(); //»ùÓÚ×Ô²â¹¦ÂÊµÄ¹¦ÂÊÏÞÖÆ£¬ÊÊÓÃÓÚ³äµçºÍÍ£Ö¹×´Ì¬
+      CurBased_PowerLimitation(); //åŸºäºŽè‡ªæµ‹åŠŸçŽ‡çš„åŠŸçŽ‡é™åˆ¶ï¼Œé€‚ç”¨äºŽå……ç”µå’Œåœæ­¢çŠ¶æ€
 		  }else{
 		    if (Cap_Get_Cap_State() == CAP_STATE_RECHARGE || Cap_Get_Cap_State() == CAP_STATE_TEMP_RECHARGE)
-		      CurBased_PowerLimitation();//»ùÓÚ×Ô²â¹¦ÂÊµÄ¹¦ÂÊÏÞÖÆ£¬ÊÊÓÃÓÚ³äµçºÍÍ£Ö¹×´Ì¬
+		      CurBased_PowerLimitation();//åŸºäºŽè‡ªæµ‹åŠŸçŽ‡çš„åŠŸçŽ‡é™åˆ¶ï¼Œé€‚ç”¨äºŽå……ç”µå’Œåœæ­¢çŠ¶æ€
 		      else{
 		        if (Cap_Get_Cap_State() == CAP_STATE_RELEASE)
-		          CapBased_PowerLimitation();//³¬¼¶µçÈÝ¹¤×÷Ä£Ê½ÏÂµÄ¹¦ÂÊÏÞÖÆ
+		          CapBased_PowerLimitation();//è¶…çº§ç”µå®¹å·¥ä½œæ¨¡å¼ä¸‹çš„åŠŸçŽ‡é™åˆ¶
 		      }
 	    }
 }
@@ -76,7 +78,7 @@ void Limit_and_Synchronization()
 	//demo end
 }
 //******************
-//Ò£¿ØÆ÷Ä£Ê½¹¦ÄÜ±àÐ´
+//é¥æŽ§å™¨æ¨¡å¼åŠŸèƒ½ç¼–å†™
 //******************
 void RemoteControlProcess(Remote *rc)
 {
@@ -97,9 +99,9 @@ void RemoteControlProcess(Remote *rc)
 
 		ChassisSpeedRef.forward_back_ref = channelrcol* RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;				
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -107,8 +109,8 @@ void RemoteControlProcess(Remote *rc)
 		ChassisTwistState = 0;
 		
 		ShootState = 0;
-		FRICL.TargetAngle = 0;
-		FRICR.TargetAngle = 0;
+		shoot_t->FRICL.TargetAngle = 0;
+		shoot_t->FRICR.TargetAngle = 0;
 		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		
 		#ifdef USE_AUTOAIM
@@ -116,7 +118,7 @@ void RemoteControlProcess(Remote *rc)
 		AutoAimGMCTRL();
 		#endif /*USE_AUTOAIM*/
 		
-		/*Ò£¿ØÆ÷×ó²àÖáêþµ½×îÏÂ£¬¿ªÆô²Õ¸Ç*/
+		/*é¥æŽ§å™¨å·¦ä¾§è½´æŽ°åˆ°æœ€ä¸‹ï¼Œå¼€å¯èˆ±ç›–*/
 		if(rc->ch3 == 0x16C)
 		{
 			//twist_state = 1;
@@ -125,7 +127,7 @@ void RemoteControlProcess(Remote *rc)
 			sprintf(ServoMes, "#%03dP%04dT%04d!", servo_id, pwm, time);
 			HAL_UART_Transmit(&SERVO_UART,(uint8_t *)&ServoMes, 15, 0xFFFF);
 		}
-		/*·ñÔò¹Ø±Õ²Õ¸Ç*/
+		/*å¦åˆ™å…³é—­èˆ±ç›–*/
 		else 
 		{
 //			twist_state = 0;
@@ -139,7 +141,7 @@ void RemoteControlProcess(Remote *rc)
 	
 	if(WorkState == ADDITIONAL_STATE_ONE)
 	{
-		//for debug SuperC£¬ÔÝÊ±ÓÃ²»µ½ÁË
+		//for debug SuperCï¼Œæš‚æ—¶ç”¨ä¸åˆ°äº†
 //		if(SuperCTestMode==1)
 //		{
 //			
@@ -155,15 +157,15 @@ void RemoteControlProcess(Remote *rc)
 		  ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
 		  
 		}
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
-			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
+			gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF*2;
 		}else
 		{
-			GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+			gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		}
-//		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		//gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		if (Cap_Get_Power_Voltage() > 9 && Cap_Get_Cap_State() == CAP_STATE_RELEASE){
 		  ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF*2;
@@ -177,9 +179,9 @@ void RemoteControlProcess(Remote *rc)
 		if(SuperCTestMode==1)
 		{
 			ShootState = 1;
-			FRICL.TargetAngle = FrictionLSpeedHigh;
-			FRICR.TargetAngle = -FrictionLSpeedHigh;
-			//´ò¿ª¼¤¹â
+			shoot_t->FRICL.TargetAngle = FrictionLSpeedHigh;
+			shoot_t->FRICR.TargetAngle = -FrictionLSpeedHigh;
+			//æ‰“å¼€æ¿€å…‰
 		HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		}
 
@@ -195,9 +197,9 @@ void RemoteControlProcess(Remote *rc)
     }
 		ChassisSpeedRef.forward_back_ref = channelrcol * RC_CHASSIS_SPEED_REF;
 		ChassisSpeedRef.left_right_ref   = channelrrow * RC_CHASSIS_SPEED_REF;
-		GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMP.TargetAngle += channellcol * RC_GIMBAL_SPEED_REF;
 		#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
+		gimbal_t->GMY.TargetAngle -= channellrow * RC_GIMBAL_SPEED_REF;
 		#else
 		ChassisSpeedRef.rotate_ref = -channellrow * RC_ROTATE_SPEED_REF;
 		#endif
@@ -205,23 +207,23 @@ void RemoteControlProcess(Remote *rc)
 		//ChassisTwistState = 0;
 		if (SuperCTestMode==1){
 		  ShootState = 1;
-		  FRICL.TargetAngle = FrictionLSpeedHigh;
-		  FRICR.TargetAngle = -FrictionLSpeedHigh;
+		  shoot_t->FRICL.TargetAngle = FrictionLSpeedHigh;
+		  shoot_t->FRICR.TargetAngle = -FrictionLSpeedHigh;
 		
 		  HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 		
-		  if(STIR.TargetAngle-STIR.RealAngle>-100){Delay(5,{STIR.TargetAngle-=60;});}
+		  if(shoot_t->STIR.TargetAngle-shoot_t->STIR.RealAngle>-100){Delay(5,{shoot_t->STIR.TargetAngle-=60;});}
 		  else
 		  {
-			  STIR.TargetAngle=STIR.RealAngle+100;
-			  Delay(5,{STIR.TargetAngle-=60;});
+			  shoot_t->STIR.TargetAngle=shoot_t->STIR.RealAngle+100;
+			  Delay(5,{shoot_t->STIR.TargetAngle-=60;});
 		  }
 		  #ifdef USE_AUTOAIM
 		  aim_mode=1;
 		  AutoAimGMCTRL();
 		  #endif /*USE_AUTOAIM*/
 		}else
-		if(SuperCTestMode == 0) {ChassisTwistState = 1;} //³¬¼¶µçÈÝÄ£Ê½ÏÂ¿ªÆôÅ¤Ñü
+		if(SuperCTestMode == 0) {ChassisTwistState = 1;} //è¶…çº§ç”µå®¹æ¨¡å¼ä¸‹å¼€å¯æ‰­è…°
 		
 	}
 	FreshSuperCState();
@@ -241,14 +243,14 @@ void KeyboardModeFSM(Key *key);
 void MouseModeFSM(Mouse *mouse);
 
 //****************
-//¼üÊóÄ£Ê½¹¦ÄÜ±àÐ´
+//é”®é¼ æ¨¡å¼åŠŸèƒ½ç¼–å†™
 //****************
 void ShootOneBullet()
 {
 	#ifdef USE_HEAT_LIMIT_INFANTRY
 	if(JUDGE_State == ONLINE && fakeHeat0 > (maxHeat0 - realBulletSpeed0) && !burst)cdflag0 = 1;
 	else cdflag0 = 0;
-	if((STIR.TargetAngle - STIR.RealAngle <= 50) && burst)
+	if((shoot_t->STIR.TargetAngle - shoot_t->STIR.RealAngle <= 50) && burst)
 	{
 		if(((!cdflag0) || JUDGE_State == OFFLINE))
 		{
@@ -259,35 +261,35 @@ void ShootOneBullet()
 			{
 				if(fakeHeat0 < (maxHeat0 - 1*realBulletSpeed0))
 				{
-					STIR.TargetAngle -= STIR_STEP_ANGLE;
+					shoot_t->STIR.TargetAngle -= STIR_STEP_ANGLE;
 					fakeHeat0 += realBulletSpeed0;
 				}
 				else 
 				{
-//					if(STIR.RealAngle - STIR.TargetAngle <= 0)STIR.TargetAngle = -STIR_STEP_ANGLE * floor(-STIR.RealAngle/STIR_STEP_ANGLE);
-					if(STIR.RealAngle - STIR.TargetAngle <= 0)STIR.TargetAngle = STIR.RealAngle;
+//					if(shoot_t->STIR.RealAngle - shoot_t->STIR.TargetAngle <= 0)shoot_t->STIR.TargetAngle = -STIR_STEP_ANGLE * floor(-shoot_t->STIR.RealAngle/STIR_STEP_ANGLE);
+					if(shoot_t->STIR.RealAngle - shoot_t->STIR.TargetAngle <= 0)shoot_t->STIR.TargetAngle = shoot_t->STIR.RealAngle;
 				}
 			}
 			allowBullet0 = 0;
 		}
 	}
-	else if((STIR.RealAngle - STIR.TargetAngle <= 1))
+	else if((shoot_t->STIR.RealAngle - shoot_t->STIR.TargetAngle <= 1))
 	{
 		if(((!cdflag0) || JUDGE_State == OFFLINE) && fakeHeat0 < (maxHeat0 - realBulletSpeed0))
 		{
 			if(fakeHeat0 < (maxHeat0 - 1*realBulletSpeed0))
 			{
 				{
-					STIR.TargetAngle -= STIR_STEP_ANGLE;
+					shoot_t->STIR.TargetAngle -= STIR_STEP_ANGLE;
 					fakeHeat0 += realBulletSpeed0;
 				}
 			}
-//			else if(STIR.RealAngle - STIR.TargetAngle <= 0)STIR.TargetAngle = -STIR_STEP_ANGLE * floor(-STIR.RealAngle/STIR_STEP_ANGLE);
-			if(STIR.RealAngle - STIR.TargetAngle <= 0)STIR.TargetAngle = STIR.RealAngle;
+//			else if(shoot_t->STIR.RealAngle - shoot_t->STIR.TargetAngle <= 0)shoot_t->STIR.TargetAngle = -STIR_STEP_ANGLE * floor(-shoot_t->STIR.RealAngle/STIR_STEP_ANGLE);
+			if(shoot_t->STIR.RealAngle - shoot_t->STIR.TargetAngle <= 0)shoot_t->STIR.TargetAngle = shoot_t->STIR.RealAngle;
 		}
 	}
 	#else
-	//STIR.TargetAngle -= STIR_STEP_ANGLE;
+	//shoot_t->STIR.TargetAngle -= STIR_STEP_ANGLE;
 	#endif
 }
 
@@ -298,9 +300,10 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	MINMAX(mouse->x, -150, 150); 
 	MINMAX(mouse->y, -150, 150); 
 	
-	GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+	gimbal_t->GMP.TargetAngle -= mouse->y * MOUSE_TO_PITCH_ANGLE_INC_FACT;
+
 	#ifdef USE_CHASSIS_FOLLOW
-		GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
+		gimbal_t->GMY.TargetAngle -= mouse->x * MOUSE_TO_YAW_ANGLE_INC_FACT;
 	#else
 		ChassisSpeedRef.rotate_ref = -mouse->x * RC_ROTATE_SPEED_REF;
 	#endif
@@ -313,8 +316,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 		{
 			ShootState = 1;
 			HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
-			FRICL.TargetAngle = FrictionLSpeedLow;
-			FRICR.TargetAngle = -FrictionLSpeedLow;
+			shoot_t->FRICL.TargetAngle = FrictionLSpeedLow;
+			shoot_t->FRICR.TargetAngle = -FrictionLSpeedLow;
 		}break;
 		case LONG_CLICK:
 		{
@@ -322,8 +325,8 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			{
 				ShootState = 0;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_RESET);
-				FRICL.TargetAngle = 0;
-				FRICR.TargetAngle = 0;
+				shoot_t->FRICL.TargetAngle = 0;
+				shoot_t->FRICR.TargetAngle = 0;
 			}
 		}break;
 		default: break;
@@ -333,15 +336,15 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 	{
 		case SHORT_CLICK:
 		{
-			if(ShootState && fabs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}
+			if(ShootState && fabs(shoot_t->STIR.TargetAngle-shoot_t->STIR.RealAngle)<5.0) {ShootOneBullet();}
 
-			//if(ShootState) Delay(20,{STIR.TargetAngle-=60;});
+			//if(ShootState) Delay(20,{shoot_t->STIR.TargetAngle-=60;});
 		}break;
 		case LONG_CLICK:
 		{
 			if(ShootState)
 			{
-				if(ShootState && abs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}//fakeHeat0=fakeHeat0+realBulletSpeed0;
+				if(ShootState && abs(shoot_t->STIR.TargetAngle-shoot_t->STIR.RealAngle)<5.0) {ShootOneBullet();}//fakeHeat0=fakeHeat0+realBulletSpeed0;
 			}
 		}
 		default: break;
@@ -393,21 +396,21 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			if(key->v & KEY_Z)  		//key: Z 12m/s
 			{
 				ShootState = 1;
-				FRICL.TargetAngle = FrictionLSpeedLow;
-				FRICR.TargetAngle = -FrictionLSpeedLow;
+				shoot_t->FRICL.TargetAngle = FrictionLSpeedLow;
+				shoot_t->FRICR.TargetAngle = -FrictionLSpeedLow;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}else if(key->v & KEY_X) 	//key: X 20m/s
 			{
 				ShootState = 1;
-				FRICL.TargetAngle = FrictionLSpeedMid;
-				FRICR.TargetAngle = -FrictionLSpeedMid;
+				shoot_t->FRICL.TargetAngle = FrictionLSpeedMid;
+				shoot_t->FRICR.TargetAngle = -FrictionLSpeedMid;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
 			else if(key->v & KEY_C) 	//key: C 28m/s
 			{
 				ShootState = 1;
-				FRICL.TargetAngle = FrictionLSpeedHigh;
-				FRICR.TargetAngle = -FrictionLSpeedHigh;
+				shoot_t->FRICL.TargetAngle = FrictionLSpeedHigh;
+				shoot_t->FRICR.TargetAngle = -FrictionLSpeedHigh;
 				HAL_GPIO_WritePin(LASER_GPIO_Port, LASER_Pin, GPIO_PIN_SET);
 			}
 			else if(key->v & KEY_F)	//press Q to open Chassis Twist, press agine to close
@@ -429,7 +432,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 					
 			else if(key->v & KEY_G)
 			{
-					/*°´×¡G¿ØÖÆ¶æ»ú£¬¿ªÆô²Õ¸Ç*/
+					/*æŒ‰ä½GæŽ§åˆ¶èˆµæœºï¼Œå¼€å¯èˆ±ç›–*/
 					int id = 0, pwm = 1200, time = 0;
 					char ServoMes[15];
 					sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
@@ -444,7 +447,7 @@ void MouseKeyControlProcess(Mouse *mouse, Key *key)
 			{
 				
 			}
-			/*²»°´G£¬¹Ø±Õ²Õ¸Ç*/
+			/*ä¸æŒ‰Gï¼Œå…³é—­èˆ±ç›–*/
 			int id = 0, pwm = 500, time = 0;
 			char ServoMes[15];
 			sprintf(ServoMes, "#%03dP%04dT%04d!", id, pwm, time);
@@ -542,7 +545,7 @@ void MouseModeFSM(Mouse *mouse)
 			if(mouse->press_l)
 			{
 				MouseLMode = SHORT_CLICK;
-				//if(ShootState && abs(STIR.TargetAngle-STIR.RealAngle)<5.0) {ShootOneBullet();}
+				//if(ShootState && abs(shoot_t->STIR.TargetAngle-shoot_t->STIR.RealAngle)<5.0) {ShootOneBullet();}
 			}
 		}break;
 	}
@@ -588,7 +591,7 @@ void MouseModeFSM(Mouse *mouse)
 	}
 }
 
-//ÓÃÓÚÒ£¿ØÆ÷Ä£Ê½ÏÂ³¬¼¶µçÈÝ²âÊÔÄ£Ê½µÄ¿ØÖÆ
+//ç”¨äºŽé¥æŽ§å™¨æ¨¡å¼ä¸‹è¶…çº§ç”µå®¹æµ‹è¯•æ¨¡å¼çš„æŽ§åˆ¶
 void FreshSuperCState(void)
 {
 	static uint8_t counter = 0;
@@ -645,12 +648,12 @@ void ChassisTwist(void)
 		{ChassisTwistGapAngle = CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		case CHASSIS_TWIST_ANGLE_LIMIT:
 		{
-			if(fabs((GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
+			if(fabs((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
 			{ChassisTwistGapAngle = -CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		}
 		case -CHASSIS_TWIST_ANGLE_LIMIT:
 		{
-			if(fabs((GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
+			if(fabs((gimbal_t->GMY.RxMsg6623.angle - GM_YAW_ZERO) * 360 / 8192.0f - ChassisTwistGapAngle)<3)
 			{ChassisTwistGapAngle = CHASSIS_TWIST_ANGLE_LIMIT;}break;
 		}
 	}

@@ -47,13 +47,15 @@
 #include "dac.h"
 
 #include "AuxDevice.h"
-#include "RemoteTask.h"
-#include "FunctionTask.h"
-#include "pid_regulator.h"
+
+#include "pid.h"
 #include "fuzzy_pid_regulator.h"
 #include "CANTask.h"
 #include "MotorTask.h"
+#include "RemoteTask.h"
+#include "FunctionTask.h"
 #include "ControlTask.h"
+#include "init.h"
 #include "drivers_ramp.h"
 #include "AutoAimTask.h"
 #include "JudgeTask.h"

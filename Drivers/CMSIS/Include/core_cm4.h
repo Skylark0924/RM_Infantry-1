@@ -462,12 +462,12 @@ typedef struct
         uint32_t RESERVED4[56U];
   __IOM uint8_t  IP[240U];               /*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
         uint32_t RESERVED5[644U];
-  __OM  uint32_t STIR;                   /*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
+  __OM  uint32_t STIR ;                 /*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
 }  NVIC_Type;
 
 /* Software Triggered Interrupt Register Definitions */
-#define NVIC_STIR_INTID_Pos                 0U                                         /*!< STIR: INTLINESNUM Position */
-#define NVIC_STIR_INTID_Msk                (0x1FFUL /*<< NVIC_STIR_INTID_Pos*/)        /*!< STIR: INTLINESNUM Mask */
+#define NVIC_STIR_INTID_Pos                 0U                                         /*!< shoot_t->STIR: INTLINESNUM Position */
+#define NVIC_STIR_INTID_Msk                (0x1FFUL /*<< NVIC_STIR_INTID_Pos*/)        /*!< shoot_t->STIR: INTLINESNUM Mask */
 
 /*@} end of group CMSIS_NVIC */
 

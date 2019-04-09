@@ -98,7 +98,7 @@ typedef struct pid_t
   float i;
   float d;
 
-  float set;
+  float target;
   float get;
   float err[3];
 

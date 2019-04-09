@@ -15,17 +15,8 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-//#include "can.h"
-//#include "board.h"
-//#include "detect.h"
-//#include "chassis.h"
-//#include "gimbal.h"
-//#include "shoot.h"
-//#include "init.h"
 #include "offline_check.h"
-//#include "gimbal_task.h"
-//#include "timer_task.h"
-//#include "infantry_cmd.h"
+#include "MotorTask.h"
 
 #define BEEP_MAX_TIMES 20
 

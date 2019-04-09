@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="RM_Infantry_1"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RM_Infantry_1">
+				<Option output="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/RM_Infantry_1" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx/Include"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Inc"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/RTE"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/RTE/_RM_frame"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 RM_Infantry_1"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RM_Infantry_1/fast">
+				<Option output="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/RM_Infantry_1" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx/Include"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Inc"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/RTE"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/RTE/_RM_frame"/>
+					<Add directory="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 RM_Infantry_1/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/media/skylark/Document/Github/RM_Infantry-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/arm_common_tables.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/arm_const_structs.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/arm_math.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/cmsis_armcc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/cmsis_armcc_V6.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/cmsis_gcc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cm0.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cm0plus.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cm3.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cm4.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cm7.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cmFunc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cmInstr.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_cmSimd.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_sc000.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/CMSIS/Include/core_sc300.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_iwdg.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/adc.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/can.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/dac.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/dma.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/gpio.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/includes.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/iwdg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/main.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/spi.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/stm32f4xx_hal_conf.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/stm32f4xx_it.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/tim.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Inc/usart.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/RTE/_RM_frame/RTE_Components.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/bsp_imu.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/bsp_imu.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/ist8310_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/mpu6050_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/mpu6500_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/mpu9250_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/myiic.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/myiic.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/MDK-ARM/bsp/mytype.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/adc.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/can.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/dac.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/dma.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/gpio.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/iwdg.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/main.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/spi.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/stm32f4xx_hal_msp.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/stm32f4xx_it.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/system_stm32f4xx.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/tim.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Src/usart.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/AutoAimTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/AuxDevice.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/CANTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/Cap2ControlTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/CapControlTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/ControlTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/FunctionTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/GyroReadTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/JudgeTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/ManifoldTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/MotorTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/PowerLimitationTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/RemoteTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/ServoTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/UpperTask.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/bsp_imu.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/detect.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/drivers_ramp.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/fuzzy_pid_regulator.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/ist8310_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/mpu6050_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/mpu6500_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/mpu9250_reg.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/myiic.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/mytype.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/offical_Judge_Handler.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/offline_check.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/pid_regulator.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Inc/visualscope.h">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/AutoAimTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/CANTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/Cap2ControlTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/CapControlTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/ControlTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/FunctionTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/GyroReadTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/JudgeTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/ManifoldTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/MotorTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/PowerLimitationTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/RemoteTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/ServoTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/UpperTask.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/bsp_imu.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/detect.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/fuzzy_pid_regulator.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/myiic.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/offline_check.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/pid_regulator.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/pid_regulator_fuzzy.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/Tasks/Src/visualscope.c">
+			<Option target="RM_Infantry_1"/>
+		</Unit>
+		<Unit filename="/media/skylark/Document/Github/RM_Infantry-1/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
