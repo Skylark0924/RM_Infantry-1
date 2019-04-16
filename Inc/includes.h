@@ -47,7 +47,6 @@
 #include "dac.h"
 
 #include "AuxDevice.h"
-
 #include "pid.h"
 #include "fuzzy_pid_regulator.h"
 #include "CANTask.h"

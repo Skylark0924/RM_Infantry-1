@@ -10,7 +10,6 @@
 ******************************************************************************
   */
 	
-#include "MotorTask.h"
 #include "includes.h"
 
 //void ControlNM(MotorINFO *id);
